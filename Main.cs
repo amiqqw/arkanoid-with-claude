@@ -6,7 +6,10 @@ public partial class Main : Node2D
 	[Export] public PackedScene BrickScene;
 	[Export] public PackedScene BallScene;
 	[Export] public PackedScene PaddleScene;
+	[Export] public PackedScene BonusBrickScene;
+	[Export] public PackedScene BonusScene;
 
+	private Node _bonusesContainer;
 	private HUD _hud;
 	private Ball _ball;
 	private Paddle _paddle;
@@ -22,6 +25,9 @@ public partial class Main : Node2D
 	{
 		_bricksContainer = new Node { Name = "Bricks" };
 		AddChild(_bricksContainer);
+
+		_bonusesContainer = new Node { Name = "Bonuses" };
+		AddChild(_bonusesContainer);
 
 		_paddle = PaddleScene.Instantiate<Paddle>();
 		AddChild(_paddle);
@@ -61,66 +67,141 @@ public partial class Main : Node2D
 			GameState.Instance.ChangePhase(GamePhase.Playing);
 		}
 
-		if (keyEvent.Keycode == Key.R && (phase == GamePhase.GameOver || phase == GamePhase.Win))
+		if (keyEvent.Keycode == Key.R)
 		{
-			StartNewGame();
+			if (phase == GamePhase.GameOver) StartNewGame();
+			else if (phase == GamePhase.Win) AdvanceToNextLevel();
 		}
 	}
 
 	/// <summary>
-    /// Полный сброс — после Game Over или при первом запуске.
-    /// </summary>
+	/// Полный сброс — после Game Over или при первом запуске.
+	/// </summary>
 	private void StartNewGame()
 	{
-		foreach (Node child in _bricksContainer.GetChildren())
+		GameState.Instance.ResetLives();
+		GameState.Instance.ResetScore();
+		GameState.Instance.ResetProgression();
+
+		LoadLevel(GameState.Instance.CurrentLevel);
+	}
+
+	private void AdvanceToNextLevel()
+	{
+		int nextLevel = GameState.Instance.CurrentLevel + 1;
+
+		if (nextLevel > Levels.Count)
 		{
-			child.QueueFree();
+			GameState.Instance.IncreaseSpeedForNewLoop();
+			nextLevel = 1;
 		}
 
-		SpawnBricks();
+		GameState.Instance.SetLevel(nextLevel);
+		LoadLevel(nextLevel);
+	}
+	
+	private void LoadLevel(int level)
+	{
+		foreach (Node child in _bricksContainer.GetChildren())
+			child.QueueFree();
+
+		foreach (Node child in _bonusesContainer.GetChildren())
+			child.QueueFree();
+
+		var layout = Levels.Layouts[level - 1];
+		SpawnBricks(layout);
 
 		_ball.ResetPosition(BallStartPosition);
 		_paddle.Position = PaddleStartPosition;
+		_paddle.ResetSize();
 
-		GameState.Instance.ResetLives();
-		GameState.Instance.ResetScore();
+		_ball.Speed = _baseBallSpeed * GameState.Instance.BallSpeedMultiplier;
 
 		GameState.Instance.ChangePhase(GamePhase.Start);
 	}
 
-	private void SpawnBricks()
+	private void SpawnBricks(int[,] layout)
 	{
 		_destructibleBricksRemaining = 0;
 
-		int rows = LevelLayout.GetLength(0);
-		int cols = LevelLayout.GetLength(1);
+		int rows = layout.GetLength(0);
+		int cols = layout.GetLength(1);
 
 		for (int row = 0; row < rows; row++)
 		{
 			for (int col = 0; col < cols; col++)
 			{
-				int code = LevelLayout[row, col];
-				if (code == 0) continue;   // пустая клетка
+				int code = layout[row, col];
+				if (code == 0) continue;
 
-				var brick = BrickScene.Instantiate<Brick>();
-				brick.Position = new Vector2(35 + col * 55, 100 + row * 25);
+				Vector2 position = new(35 + col * 55, 100 + row * 25);
 
-				if (code == -1)
+				if (code >= 10)
 				{
+					// Бонусный блок: 10/20/30 = прочность 1/2/3
+					int hits = code / 10;
+					var bonusBrick = BonusBrickScene.Instantiate<BonusBrick>();
+					bonusBrick.Position = position;
+					bonusBrick.MaxHits = hits;
+					bonusBrick.ScorePerDestroy = hits * 100;
+					bonusBrick.DropType = (BonusType)GD.RandRange(0, 3);   // случайный тип
+					bonusBrick.Destroyed += OnBrickDestroyed;
+					bonusBrick.BonusDrop += OnBonusDrop;
+					_bricksContainer.AddChild(bonusBrick);
+					_destructibleBricksRemaining += 1;
+				}
+				else if (code == -1)
+				{
+					var brick = BrickScene.Instantiate<Brick>();
+					brick.Position = position;
 					brick.Indestructible = true;
 					brick.MaxHits = 1;
 					brick.ScorePerDestroy = 0;
+					_bricksContainer.AddChild(brick);
 				}
 				else
 				{
+					var brick = BrickScene.Instantiate<Brick>();
+					brick.Position = position;
 					brick.MaxHits = code;
 					brick.ScorePerDestroy = code * 100;
 					brick.Destroyed += OnBrickDestroyed;
+					_bricksContainer.AddChild(brick);
 					_destructibleBricksRemaining += 1;
 				}
-
-				_bricksContainer.AddChild(brick);
 			}
+		}
+	}
+
+	private void OnBonusDrop(Vector2 position, int bonusTypeInt)
+	{
+		var bonus = BonusScene.Instantiate<Bonus>();
+		bonus.Position = position;
+		bonus.Type = (BonusType)bonusTypeInt;
+		bonus.Collected += OnBonusCollected;
+		_bonusesContainer.AddChild(bonus);
+	}
+
+	private void OnBonusCollected(int bonusTypeInt)
+	{
+		var type = (BonusType)bonusTypeInt;
+		GD.Print($"Bonus collected: {type}");
+
+		switch (type)
+		{
+			case BonusType.LongPaddle:
+				_paddle.ApplySizeMultiplier(1.5f, 10f);
+				break;
+			case BonusType.ShortPaddle:
+				_paddle.ApplySizeMultiplier(0.7f, 10f);
+				break;
+			case BonusType.ExtraLife:
+				GameState.Instance.AddLife();
+				break;
+			case BonusType.MultiBall:
+				// Заглушка для этапа А — реализуем на этапе B
+				GD.Print("MultiBall: not implemented yet");
+				break;
 		}
 	}
 

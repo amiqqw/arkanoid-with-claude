@@ -1,18 +1,21 @@
 [gd_scene format=3 uid="uid://dsi3h04bg83oy"]
 
 [ext_resource type="Script" uid="uid://dmt4xqalcry1b" path="res://scripts/Paddle.cs" id="1_6vb5h"]
+[ext_resource type="Texture2D" uid="uid://bheei4s5aanxg" path="res://sprites/ohh.png" id="2_6kxou"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ujhtd"]
-size = Vector2(80, 12)
+size = Vector2(84, 18)
 
 [node name="Paddle" type="CharacterBody2D" unique_id=1845857891]
 script = ExtResource("1_6vb5h")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=19413912]
-offset_left = -40.0
-offset_top = -6.0
-offset_right = 40.0
-offset_bottom = 6.0
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=857939611]
 shape = SubResource("RectangleShape2D_ujhtd")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1398319638]
+offset_left = -42.0
+offset_top = -9.0
+offset_right = 42.0
+offset_bottom = 9.0
+texture = ExtResource("2_6kxou")
+expand_mode = 1

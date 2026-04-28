@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://d4bwhhqmi8o3u"]
+
+[ext_resource type="Texture2D" uid="uid://dm4bnqjybolwt" path="res://sprites/plz.png" id="1_45hde"]
+[ext_resource type="Script" uid="uid://w08x3g2boi28" path="res://scripts/Bonus.cs" id="1_vn8bm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vn8bm"]
+size = Vector2(24, 24)
+
+[node name="Bonus" type="Area2D" unique_id=151794466]
+script = ExtResource("1_vn8bm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1368797597]
+shape = SubResource("RectangleShape2D_vn8bm")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1458226785]
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 12.0
+offset_bottom = 12.0
+texture = ExtResource("1_45hde")
+expand_mode = 1

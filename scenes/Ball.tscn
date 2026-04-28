@@ -3,19 +3,19 @@
 [ext_resource type="Script" uid="uid://cjyowiek4fa4x" path="res://scripts/Ball.cs" id="1_gk6bx"]
 [ext_resource type="Texture2D" uid="uid://dkbsg1o3s1lgl" path="res://sprites/petra.png" id="2_lww6v"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lww6v"]
-size = Vector2(12, 12)
+[sub_resource type="CircleShape2D" id="CircleShape2D_ja1hk"]
+radius = 8.0
 
 [node name="Ball" type="CharacterBody2D" unique_id=625025917]
 script = ExtResource("1_gk6bx")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=350113089]
-shape = SubResource("RectangleShape2D_lww6v")
+shape = SubResource("CircleShape2D_ja1hk")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1015990211]
-offset_left = -6.0
-offset_top = -6.0
-offset_right = 6.0
-offset_bottom = 6.0
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
 texture = ExtResource("2_lww6v")
 expand_mode = 1

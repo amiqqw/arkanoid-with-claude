@@ -11,3 +11,11 @@ public enum GamePhase
 	GameOver,
 	Win
 }
+
+public enum BonusType
+{
+    LongPaddle,
+    ShortPaddle,
+    ExtraLife,
+    MultiBall
+}

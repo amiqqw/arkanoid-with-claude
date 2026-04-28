@@ -25,8 +25,6 @@ public partial class Brick : StaticBody2D
 		_hitsLabel = GetNode<Label>("HitsLabel");
 		_hitsRemaining = MaxHits;
 
-		// Применяем цвет к самому блоку (modulate красит всех детей,
-		// включая текстуру)
 		UpdateVisual();
 	}
 
@@ -42,6 +40,7 @@ public partial class Brick : StaticBody2D
 
 		if (_hitsRemaining <= 0)
 		{
+			OnDestroyEffect();
 			GameState.Instance.AddScore(ScorePerDestroy);
 			EmitSignal(SignalName.Destroyed);
 			QueueFree();
@@ -68,5 +67,13 @@ public partial class Brick : StaticBody2D
 		}
 
 		Modulate = color;
+	}
+
+	/// <summary>
+	/// Точка расширения. Базовая реализация ничего не делает.
+	/// BonusBrick переопределяет этот метод, чтобы уронить бонус.
+	/// </summary>
+	protected virtual void OnDestroyEffect()
+	{
 	}
 }

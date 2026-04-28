@@ -11,13 +11,14 @@ public partial class GameState : Node
     [Signal] public delegate void LevelChangedEventHandler(int level);
 
     public const int StartingLives = 3;
-    public const float SpeedIncreasePerLoop = 0.2f;   // +20% за каждый цикл уровней
+    public const float SpeedIncreasePerLoop = 0.2f;
+    private int _startingLevel = 2;
 
     public int Lives { get; private set; }
     public int Score { get; private set; }
     public int HiScore { get; private set; }
     public GamePhase Phase { get; private set; }
-    public int CurrentLevel { get; private set; }     // 1-based для UI
+    public int CurrentLevel { get; private set; }
     public float BallSpeedMultiplier { get; private set; }
 
     public override void _Ready()
@@ -27,7 +28,7 @@ public partial class GameState : Node
         Score = 0;
         HiScore = 0;
         Phase = GamePhase.Start;
-        CurrentLevel = 1;
+        CurrentLevel = _startingLevel;
         BallSpeedMultiplier = 1f;
     }
 
@@ -47,17 +48,23 @@ public partial class GameState : Node
         EmitSignal(SignalName.ScoreChanged, Score, HiScore);
     }
 
-    public void LoseLife()
-    {
-        Lives -= 1;
-        EmitSignal(SignalName.LivesChanged, Lives);
+	public void LoseLife()
+	{
+		Lives -= 1;
+		EmitSignal(SignalName.LivesChanged, Lives);
 
-        if (Lives <= 0)
-        {
-            EmitSignal(SignalName.GameOver);
-            ChangePhase(GamePhase.GameOver);
-        }
-    }
+		if (Lives <= 0)
+		{
+			EmitSignal(SignalName.GameOver);
+			ChangePhase(GamePhase.GameOver);
+		}
+	}
+	
+	public void AddLife()
+	{
+		Lives += 1;
+		EmitSignal(SignalName.LivesChanged, Lives);
+	}
 
     public void ResetLives()
     {
@@ -79,7 +86,7 @@ public partial class GameState : Node
 
     public void ResetProgression()
     {
-        CurrentLevel = 1;
+        CurrentLevel = _startingLevel;
         BallSpeedMultiplier = 1f;
         EmitSignal(SignalName.LevelChanged, CurrentLevel);
     }

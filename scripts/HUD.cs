@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Xml.Serialization;
 
 public partial class HUD : CanvasLayer
 {
@@ -9,11 +10,14 @@ public partial class HUD : CanvasLayer
 	private Label _messageLabel;
 	private Label _inputModeLabel;
 
+	private int _currentLives;
+	private int _currentLevel;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		_scoreLabel   = GetNode<Label>("TopBar/ScoreLabel");
-		_livesLabel   = GetNode<Label>("TopBar/LivesLabel");
+		_scoreLabel = GetNode<Label>("TopBar/ScoreLabel");
+		_livesLabel = GetNode<Label>("TopBar/LivesLabel");
 		_hiScoreLabel = GetNode<Label>("TopBar/HiScoreLabel");
 		_messageLabel = GetNode<Label>("MessageLabel");
 		_inputModeLabel = GetNode<Label>("InputModeLabel");
@@ -23,15 +27,31 @@ public partial class HUD : CanvasLayer
 		gs.ScoreChanged += OnScoreChanged;
 		gs.LivesChanged += OnLivesChanged;
 		gs.PhaseChanged += OnPhaseChange;
+		gs.LevelChanged += OnLevelChanged;
+
+		_currentLives = gs.Lives;
+		_currentLevel = gs.CurrentLevel;
 
 		OnLivesChanged(gs.Lives);
 		OnScoreChanged(gs.Score, gs.HiScore);
 		OnPhaseChange((int)gs.Phase);
 	}
 
+	private void OnLevelChanged(int level)
+	{
+		_currentLevel = level;
+		UpdateLivesLabel();
+	}
+
 	private void OnLivesChanged(int lives)
 	{
-		_livesLabel.Text = $"Lives: {lives}";
+		_currentLives = lives;
+		UpdateLivesLabel();
+	}
+
+	private void UpdateLivesLabel()
+	{
+		_livesLabel.Text = $"Lives: {_currentLives}\nLvl: {_currentLevel}";
 	}
 
 	private void OnScoreChanged(int score, int hiScore)
@@ -58,7 +78,14 @@ public partial class HUD : CanvasLayer
 				_messageLabel.Visible = true;
 				break;
 			case GamePhase.Win:
-				_messageLabel.Text = "YOU WIN!\nPress R to continue";
+				if (GameState.Instance.CurrentLevel == Levels.Count)
+				{
+					_messageLabel.Text = "ALL LEVELS CLEARED!\nPress R to restart with +20% ball speed";
+				}
+				else
+				{
+					_messageLabel.Text = "LEVEL CLEARED!\nPress R to continue";
+				}
 				_messageLabel.Visible = true;
 				break;
 			default:

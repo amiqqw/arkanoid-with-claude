@@ -5,12 +5,16 @@
 [ext_resource type="PackedScene" uid="uid://lo2gh6pnfyhg" path="res://scenes/Ball.tscn" id="3_fos0i"]
 [ext_resource type="PackedScene" uid="uid://dsi3h04bg83oy" path="res://scenes/Paddle.tscn" id="4_3dxm6"]
 [ext_resource type="Script" uid="uid://qnwpx1hsub7b" path="res://scripts/HUD.cs" id="5_fos0i"]
+[ext_resource type="PackedScene" uid="uid://cy1y5h0dulixv" path="res://scenes/BonusBrick.tscn" id="5_lgr22"]
+[ext_resource type="PackedScene" uid="uid://d4bwhhqmi8o3u" path="res://scenes/Bonus.tscn" id="6_trn2v"]
 
 [node name="Main" type="Node2D" unique_id=397703416]
 script = ExtResource("1_glv2v")
 BrickScene = ExtResource("2_cm0pq")
 BallScene = ExtResource("3_fos0i")
 PaddleScene = ExtResource("4_3dxm6")
+BonusBrickScene = ExtResource("5_lgr22")
+BonusScene = ExtResource("6_trn2v")
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1328610632]
 script = ExtResource("5_fos0i")
@@ -40,7 +44,9 @@ offset_top = 8.0
 offset_right = 28.5
 offset_bottom = 31.0
 grow_horizontal = 2
-text = "Lives: 3"
+text = "Lives: 3
+Lvl: 1"
+horizontal_alignment = 1
 
 [node name="HiScoreLabel" type="Label" parent="HUD/TopBar" unique_id=1685362129]
 layout_mode = 1

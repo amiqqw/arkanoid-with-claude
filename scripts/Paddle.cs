@@ -9,19 +9,24 @@ public partial class Paddle : CharacterBody2D
 	public InputMode CurrentMode => _inputMode;
 	private InputMode _inputMode = InputMode.Keyboard;
 
+	private float _baseScaleX;
+	private Timer _sizeTimer;
+
+	public override void _Ready()
+	{
+		_baseScaleX = Scale.X;
+
+		_sizeTimer = new Timer { OneShot = true };
+		AddChild(_sizeTimer);
+		_sizeTimer.Timeout += RestoreSize;
+	}
+
 	public override void _UnhandledInput(InputEvent @event)
 	{
 		if (@event is InputEventKey keyEvent && keyEvent.Pressed && keyEvent.Keycode == Key.M)
 		{
 			ToggleInputMode();
 		}
-	}
-
-	private void ToggleInputMode()
-	{
-		_inputMode = (_inputMode == InputMode.Keyboard) ? InputMode.Mouse : InputMode.Keyboard;
-		GD.Print($"Paddle input mode: {_inputMode}");
-		EmitSignal(SignalName.InputModeChanged, (int)_inputMode);
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -40,6 +45,13 @@ public partial class Paddle : CharacterBody2D
 		ClampToScreen();
 	}
 
+	private void ToggleInputMode()
+	{
+		_inputMode = (_inputMode == InputMode.Keyboard) ? InputMode.Mouse : InputMode.Keyboard;
+		GD.Print($"Paddle input mode: {_inputMode}");
+		EmitSignal(SignalName.InputModeChanged, (int)_inputMode);
+	}
+
 	private void HandleKeyboard()
 	{
 		float direction = Input.GetAxis("ui_left", "ui_right");
@@ -52,14 +64,11 @@ public partial class Paddle : CharacterBody2D
 		float targetX = GetGlobalMousePosition().X;
 		float dx = targetX - Position.X;
 
-		// Ограничиваем смещение скоростью
 		float maxStep = Speed * (float)delta;
 		dx = Mathf.Clamp(dx, -maxStep, maxStep);
 
-		// Двигаемся вручную (без MoveAndSlide), потому что цель — точная позиция
 		Position += new Vector2(dx, 0);
 
-		// Velocity всё равно сбросим, чтобы не накапливалась "память" из keyboard-режима
 		Velocity = Vector2.Zero;
 	}
 
@@ -70,5 +79,22 @@ public partial class Paddle : CharacterBody2D
 			Mathf.Clamp(Position.X, 40, viewportWidth - 40),
 			Position.Y
 		);
+	}
+
+	public void ApplySizeMultiplier(float multiplier, float duration)
+	{
+		Scale = new Vector2(_baseScaleX * multiplier, Scale.Y);
+		_sizeTimer.Start(duration + _sizeTimer.TimeLeft);
+	}
+
+	public void ResetSize()
+	{
+		_sizeTimer.Stop();
+		Scale = new Vector2(_baseScaleX, Scale.Y);
+	}
+
+	private void RestoreSize()
+	{
+		Scale = new Vector2(_baseScaleX, Scale.Y);
 	}
 }

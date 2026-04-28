@@ -1,23 +1,23 @@
-[gd_scene format=3 uid="uid://cbt5dut7w7onw"]
+[gd_scene format=3 uid="uid://cy1y5h0dulixv"]
 
-[ext_resource type="Script" uid="uid://35vnbe2aoc5o" path="res://scripts/Brick.cs" id="1_jfaf4"]
-[ext_resource type="Texture2D" uid="uid://cg07nk6p1douq" path="res://sprites/silly.png" id="2_ak42d"]
+[ext_resource type="Script" uid="uid://b2bmvaerssgkj" path="res://scripts/BonusBrick.cs" id="1_egijw"]
+[ext_resource type="Texture2D" uid="uid://dm4bnqjybolwt" path="res://sprites/plz.png" id="2_q7pvu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ak42d"]
 size = Vector2(50, 20)
 
-[node name="Brick" type="StaticBody2D" unique_id=1138137920]
-script = ExtResource("1_jfaf4")
+[node name="BonusBrick" type="StaticBody2D" unique_id=1138137920]
+script = ExtResource("1_egijw")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=87900763]
 shape = SubResource("RectangleShape2D_ak42d")
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=879629834]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=951699693]
 offset_left = -25.0
 offset_top = -10.0
 offset_right = 25.0
 offset_bottom = 10.0
-texture = ExtResource("2_ak42d")
+texture = ExtResource("2_q7pvu")
 expand_mode = 1
 
 [node name="HitsLabel" type="Label" parent="." unique_id=816158231]
