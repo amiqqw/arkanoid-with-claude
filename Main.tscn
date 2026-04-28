@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://e152y8ec18q"]
+
+[ext_resource type="Script" uid="uid://v7mrl10hnmqa" path="res://Main.cs" id="1_glv2v"]
+[ext_resource type="PackedScene" uid="uid://cbt5dut7w7onw" path="res://scenes/Brick.tscn" id="2_cm0pq"]
+[ext_resource type="PackedScene" uid="uid://lo2gh6pnfyhg" path="res://scenes/Ball.tscn" id="3_fos0i"]
+[ext_resource type="PackedScene" uid="uid://dsi3h04bg83oy" path="res://scenes/Paddle.tscn" id="4_3dxm6"]
+[ext_resource type="Script" uid="uid://qnwpx1hsub7b" path="res://scripts/HUD.cs" id="5_fos0i"]
+
+[node name="Main" type="Node2D" unique_id=397703416]
+script = ExtResource("1_glv2v")
+BrickScene = ExtResource("2_cm0pq")
+BallScene = ExtResource("3_fos0i")
+PaddleScene = ExtResource("4_3dxm6")
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1328610632]
+script = ExtResource("5_fos0i")
+
+[node name="TopBar" type="Control" parent="HUD" unique_id=2147106547]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="ScoreLabel" type="Label" parent="HUD/TopBar" unique_id=1169235561]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 69.0
+offset_bottom = 31.0
+text = "Score: 0"
+
+[node name="LivesLabel" type="Label" parent="HUD/TopBar" unique_id=1864167159]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -28.5
+offset_top = 8.0
+offset_right = 28.5
+offset_bottom = 31.0
+grow_horizontal = 2
+text = "Lives: 3"
+
+[node name="HiScoreLabel" type="Label" parent="HUD/TopBar" unique_id=1685362129]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -89.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "Hi Score: 0"
+
+[node name="MessageLabel" type="Label" parent="HUD" unique_id=1510571933]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 24
+text = "Press SPACE to start"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InputModeLabel" type="Label" parent="HUD" unique_id=656993750]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -22.0
+offset_right = 163.0
+offset_bottom = -6.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 11
+text = "Input: Keyboard (M to toggle)"

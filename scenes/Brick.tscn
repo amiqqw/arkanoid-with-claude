@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://cbt5dut7w7onw"]
+
+[ext_resource type="Script" uid="uid://35vnbe2aoc5o" path="res://scripts/Brick.cs" id="1_jfaf4"]
+[ext_resource type="Texture2D" uid="uid://cg07nk6p1douq" path="res://sprites/silly.png" id="2_ak42d"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ak42d"]
+size = Vector2(50, 20)
+
+[node name="Brick" type="StaticBody2D" unique_id=1138137920]
+script = ExtResource("1_jfaf4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=87900763]
+shape = SubResource("RectangleShape2D_ak42d")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=879629834]
+offset_left = -25.0
+offset_top = -10.0
+offset_right = 25.0
+offset_bottom = 10.0
+texture = ExtResource("2_ak42d")
+expand_mode = 1
+
+[node name="HitsLabel" type="Label" parent="." unique_id=816158231]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -10.0
+offset_right = 5.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0, 0.4862745, 1)
+theme_override_font_sizes/font_size = 12
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
