@@ -24,6 +24,8 @@ public partial class Main : Node2D
 
 	public override void _Ready()
 	{
+		GetTree().AutoAcceptQuit = false;
+
 		_bricksContainer = new Node { Name = "Bricks" };
 		AddChild(_bricksContainer);
 
@@ -68,14 +70,13 @@ public partial class Main : Node2D
 
 		if (keyEvent.Keycode == Key.R)
 		{
+			if (_hud.IsAwaitingName) return;
+			
 			if (phase == GamePhase.GameOver) StartNewGame();
 			else if (phase == GamePhase.Win) AdvanceToNextLevel();
 		}
 	}
 
-	/// <summary>
-	/// Полный сброс — после Game Over или при первом запуске.
-	/// </summary>
 	private void StartNewGame()
 	{
 		GameState.Instance.ResetLives();
@@ -164,7 +165,6 @@ public partial class Main : Node2D
 					bonusBrick.MaxHits = hits;
 					bonusBrick.ScorePerDestroy = hits * 100;
 					bonusBrick.DropType = (BonusType)GD.RandRange(0, 3);   // случайный тип
-					bonusBrick.DropType = BonusType.MultiBall;
 					bonusBrick.Destroyed += OnBrickDestroyed;
 					bonusBrick.BonusDrop += OnBonusDrop;
 					_bricksContainer.AddChild(bonusBrick);
@@ -255,9 +255,9 @@ public partial class Main : Node2D
 	private void OnPhaseChanged(int phaseInt)
 	{
 		var phase = (GamePhase)phaseInt;
-		Input.MouseMode = (phase == GamePhase.Playing)
-			? Input.MouseModeEnum.Hidden
-			: Input.MouseModeEnum.Visible;
+		// Input.MouseMode = (phase == GamePhase.Playing)
+		// 	? Input.MouseModeEnum.Hidden
+		// 	: Input.MouseModeEnum.Visible;
 	}
 
 	private void SpawnExtraBalls()
@@ -265,7 +265,7 @@ public partial class Main : Node2D
 		var spawnPoints = new List<Vector2>();
 		foreach (var ball in _balls)
 		{
-			spawnPoints.Add(ball.Position);
+			spawnPoints.Add(ball.Position + new Vector2(12, 0));
 		}
 
 		foreach (var pos in spawnPoints)
@@ -273,5 +273,19 @@ public partial class Main : Node2D
 			var clone = BallScene.Instantiate<Ball>();
 			AddBall(clone, pos, new Vector2(-0.5f, -1).Normalized());
 		}
+	}
+
+	public override void _Notification(int what)
+	{
+		if (what == NotificationWMCloseRequest)
+		{
+			OnQuitRequested();
+		}
+	}
+
+	private void OnQuitRequested()
+	{
+		GD.Print("Window close requested — quitting cleanly.");
+		GetTree().Quit();
 	}
 }

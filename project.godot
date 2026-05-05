@@ -17,6 +17,7 @@ config/icon="res://sprites/icon.svg"
 
 [autoload]
 
+HighScoreTable="*uid://b4lri152fbwx0"
 GameState="*uid://dimrpcuh6310d"
 
 [display]
@@ -27,6 +28,13 @@ window/size/viewport_height=640
 [dotnet]
 
 project/assembly_name="arkanoid with claude"
+
+[layer_names]
+
+2d_physics/layer_1="Ball"
+2d_physics/layer_2="Paddle"
+2d_physics/layer_3="Brick"
+2d_physics/layer_4="Bonus"
 
 [physics]
 

@@ -10,6 +10,14 @@ public partial class HUD : CanvasLayer
 	private Label _messageLabel;
 	private Label _inputModeLabel;
 
+	private Panel _highScoresPanel;
+	private Label _scoresLabel;
+	private HBoxContainer _nameInputBox;
+	private LineEdit _nameInput;
+	private int _newEntryIndex = -1;
+	private int _pendingScore = 0;
+	public bool IsAwaitingName => _newEntryIndex != -1 && _nameInputBox.Visible;
+
 	private int _currentLives;
 	private int _currentLevel;
 
@@ -21,6 +29,12 @@ public partial class HUD : CanvasLayer
 		_hiScoreLabel = GetNode<Label>("TopBar/HiScoreLabel");
 		_messageLabel = GetNode<Label>("MessageLabel");
 		_inputModeLabel = GetNode<Label>("InputModeLabel");
+		_highScoresPanel = GetNode<Panel>("HighScoresPanel");
+		_scoresLabel     = GetNode<Label>("HighScoresPanel/VBox/ScoresLabel");
+		_nameInputBox    = GetNode<HBoxContainer>("HighScoresPanel/VBox/NameInputBox");
+		_nameInput = GetNode<LineEdit>("HighScoresPanel/VBox/NameInputBox/NameInput");
+		
+		_nameInput.TextSubmitted += OnNameSubmitted;
 
 		var gs = GameState.Instance;
 
@@ -87,13 +101,16 @@ public partial class HUD : CanvasLayer
 			case GamePhase.Start:
 				_messageLabel.Text = "Press SPACE to start";
 				_messageLabel.Visible = true;
+				_highScoresPanel.Visible = false;
 				break;
 			case GamePhase.Playing:
 				_messageLabel.Visible = false;
+				_highScoresPanel.Visible = false;
 				break;
 			case GamePhase.GameOver:
-				_messageLabel.Text = "GAME OVER\nPress R to restart";
+				_messageLabel.Text = "GAME OVER";
 				_messageLabel.Visible = true;
+				ShowHighScoresPanel();
 				break;
 			case GamePhase.Win:
 				if (GameState.Instance.CurrentLevel == Levels.Count)
@@ -105,6 +122,7 @@ public partial class HUD : CanvasLayer
 					_messageLabel.Text = "LEVEL CLEARED!\nPress R to continue";
 				}
 				_messageLabel.Visible = true;
+				_highScoresPanel.Visible = false;
 				break;
 			default:
 				break;
@@ -118,5 +136,66 @@ public partial class HUD : CanvasLayer
 	{
 		var mode = (InputMode)modeInt;
 		_inputModeLabel.Text = $"Input: {mode} (M to toggle)";
+	}
+
+	private void ShowHighScoresPanel()
+	{
+		int score = GameState.Instance.Score;
+		var table = HighScoreTable.Instance;
+
+		if (table.IsHighScore(score))
+		{
+			// попал в топ — ждём ввода имени
+			_pendingScore = score;
+			_newEntryIndex = -1;
+			_nameInputBox.Visible = true;
+			_nameInput.Text = "";
+			_nameInput.GrabFocus();
+		}
+		else
+		{
+			_newEntryIndex = -1;
+			_pendingScore = 0;
+			_nameInputBox.Visible = false;
+		}
+
+		UpdateScoresText();
+		_highScoresPanel.Visible = true;
+	}
+
+	private void OnNameSubmitted(string text)
+	{
+		_newEntryIndex = HighScoreTable.Instance.AddEntry(text, _pendingScore);
+		_nameInputBox.Visible = false;
+		_nameInput.ReleaseFocus();
+		_pendingScore = 0;
+
+		UpdateScoresText();
+		var newHiScore = HighScoreTable.Instance.HighestScore;
+		if (newHiScore != GameState.Instance.HiScore)
+		{
+			GameState.Instance.RefreshHiScoreFromTable();
+		}
+	}
+
+	private void UpdateScoresText()
+	{
+		var entries = HighScoreTable.Instance.Entries;
+		var sb = new System.Text.StringBuilder();
+
+		for (int i = 0; i < HighScoreTable.MaxEntries; i++)
+		{
+			string marker = (i == _newEntryIndex) ? " <" : "";
+			if (i < entries.Count)
+			{
+				sb.AppendLine($"{i + 1,2}. {entries[i].Name,-12} {entries[i].Score,6}{marker}");
+			}
+			else
+			{
+				sb.AppendLine($"{i + 1,2}. ---          ---");
+			}
+		}
+
+		_scoresLabel.Text = sb.ToString();
 	}
 }

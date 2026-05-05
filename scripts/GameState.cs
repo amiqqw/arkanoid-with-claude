@@ -13,6 +13,7 @@ public partial class GameState : Node
     public const int StartingLives = 3;
     public const float SpeedIncreasePerLoop = 0.2f;
     private int _startingLevel = 3; //! поменять на 1 перед сдачей
+    private const int _maxLives = 5;
 
     public int Lives { get; private set; }
     public int Score { get; private set; }
@@ -26,7 +27,7 @@ public partial class GameState : Node
         Instance = this;
         Lives = StartingLives;
         Score = 0;
-        HiScore = 0;
+        HiScore = HighScoreTable.Instance.HighestScore;
         Phase = GamePhase.Start;
         CurrentLevel = _startingLevel;
         BallSpeedMultiplier = 1f;
@@ -62,11 +63,11 @@ public partial class GameState : Node
 	
 	public void AddLife()
 	{
-		if (Lives < 3)
+		if (Lives < _maxLives)
         {
             Lives += 1;
+            EmitSignal(SignalName.LivesChanged, Lives);
         }
-		EmitSignal(SignalName.LivesChanged, Lives);
 	}
 
     public void ResetLives()
@@ -97,5 +98,15 @@ public partial class GameState : Node
     public void IncreaseSpeedForNewLoop()
     {
         BallSpeedMultiplier += SpeedIncreasePerLoop;
+    }
+
+    public void RefreshHiScoreFromTable()
+    {
+        int newHi = HighScoreTable.Instance.HighestScore;
+        if (newHi != HiScore)
+        {
+            HiScore = newHi;
+            EmitSignal(SignalName.ScoreChanged, Score, HiScore);
+        }
     }
 }
