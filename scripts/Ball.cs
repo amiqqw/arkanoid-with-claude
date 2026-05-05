@@ -42,4 +42,9 @@ public partial class Ball : CharacterBody2D
 		Position = position;
 		_direction = new Vector2(0.5f, -1).Normalized();
 	}
+
+	public void SetDirection(Vector2 direction)
+	{
+		_direction = direction.Normalized();
+	}
 }

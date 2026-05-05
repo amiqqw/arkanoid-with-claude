@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 
 public partial class Main : Node2D
@@ -11,7 +12,7 @@ public partial class Main : Node2D
 
 	private Node _bonusesContainer;
 	private HUD _hud;
-	private Ball _ball;
+	private List<Ball> _balls = new();
 	private Paddle _paddle;
 	private Node _bricksContainer;
 
@@ -36,11 +37,9 @@ public partial class Main : Node2D
 		_paddle.InputModeChanged += _hud.OnPaddleInputModeChanged;
 		_hud.OnPaddleInputModeChanged((int)_paddle.CurrentMode);
 
-		_ball = BallScene.Instantiate<Ball>();
-		_ball.FellDown += OnFellDown;
-		AddChild(_ball);
-
-		_baseBallSpeed = _ball.Speed;
+		var probe = BallScene.Instantiate<Ball>();
+		_baseBallSpeed = probe.Speed;
+		probe.QueueFree();
 
 		GameState.Instance.GameOver += OnGameOver;
 		GameState.Instance.PhaseChanged += OnPhaseChanged;
@@ -99,7 +98,7 @@ public partial class Main : Node2D
 		GameState.Instance.SetLevel(nextLevel);
 		LoadLevel(nextLevel);
 	}
-	
+
 	private void LoadLevel(int level)
 	{
 		foreach (Node child in _bricksContainer.GetChildren())
@@ -108,16 +107,36 @@ public partial class Main : Node2D
 		foreach (Node child in _bonusesContainer.GetChildren())
 			child.QueueFree();
 
+		foreach (var item in _balls)
+			item.QueueFree();
+		_balls.Clear();
+
 		var layout = Levels.Layouts[level - 1];
 		SpawnBricks(layout);
 
-		_ball.ResetPosition(BallStartPosition);
+		var ball = BallScene.Instantiate<Ball>();
+		AddBall(ball, BallStartPosition);
+
 		_paddle.Position = PaddleStartPosition;
 		_paddle.ResetSize();
 
-		_ball.Speed = _baseBallSpeed * GameState.Instance.BallSpeedMultiplier;
-
 		GameState.Instance.ChangePhase(GamePhase.Start);
+	}
+	
+	private void AddBall(Ball ball, Vector2 position, Vector2? direction = null)
+	{
+		ball.Position = position;
+		if (direction.HasValue)
+		{
+			ball.SetDirection(direction.Value);
+		}
+		ball.Speed = _baseBallSpeed * GameState.Instance.BallSpeedMultiplier;
+
+		// Замыкание захватывает 'ball', и обработчик знает, какой именно мяч упал
+		ball.FellDown += () => OnBallFellDown(ball);
+
+		_balls.Add(ball);
+		AddChild(ball);
 	}
 
 	private void SpawnBricks(int[,] layout)
@@ -145,6 +164,7 @@ public partial class Main : Node2D
 					bonusBrick.MaxHits = hits;
 					bonusBrick.ScorePerDestroy = hits * 100;
 					bonusBrick.DropType = (BonusType)GD.RandRange(0, 3);   // случайный тип
+					bonusBrick.DropType = BonusType.MultiBall;
 					bonusBrick.Destroyed += OnBrickDestroyed;
 					bonusBrick.BonusDrop += OnBonusDrop;
 					_bricksContainer.AddChild(bonusBrick);
@@ -199,8 +219,7 @@ public partial class Main : Node2D
 				GameState.Instance.AddLife();
 				break;
 			case BonusType.MultiBall:
-				// Заглушка для этапа А — реализуем на этапе B
-				GD.Print("MultiBall: not implemented yet");
+				SpawnExtraBalls();
 				break;
 		}
 	}
@@ -210,21 +229,27 @@ public partial class Main : Node2D
 		_destructibleBricksRemaining -= 1;
 	}
 
-	private void OnFellDown()
+	private void OnBallFellDown(Ball ball)
 	{
-		GameState.Instance.LoseLife();
+		_balls.Remove(ball);
+		ball.QueueFree();
 
-		if (GameState.Instance.Lives > 0)
+		if (_balls.Count == 0)
 		{
-			_ball.ResetPosition(BallStartPosition);
-			GameState.Instance.ChangePhase(GamePhase.Start);
+			GameState.Instance.LoseLife();
+
+			if (GameState.Instance.Lives > 0)
+			{
+				var newBall = BallScene.Instantiate<Ball>();
+				AddBall(newBall, BallStartPosition);
+				GameState.Instance.ChangePhase(GamePhase.Start);
+			}
 		}
 	}
 
 	private void OnGameOver()
 	{
 		GD.Print("git gud"); // для вайба
-		_ball.ResetPosition(BallStartPosition);
 	}
 
 	private void OnPhaseChanged(int phaseInt)
@@ -233,5 +258,20 @@ public partial class Main : Node2D
 		Input.MouseMode = (phase == GamePhase.Playing)
 			? Input.MouseModeEnum.Hidden
 			: Input.MouseModeEnum.Visible;
+	}
+
+	private void SpawnExtraBalls()
+	{
+		var spawnPoints = new List<Vector2>();
+		foreach (var ball in _balls)
+		{
+			spawnPoints.Add(ball.Position);
+		}
+
+		foreach (var pos in spawnPoints)
+		{
+			var clone = BallScene.Instantiate<Ball>();
+			AddBall(clone, pos, new Vector2(-0.5f, -1).Normalized());
+		}
 	}
 }

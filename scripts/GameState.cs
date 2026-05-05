@@ -12,7 +12,7 @@ public partial class GameState : Node
 
     public const int StartingLives = 3;
     public const float SpeedIncreasePerLoop = 0.2f;
-    private int _startingLevel = 2;
+    private int _startingLevel = 3; //! поменять на 1 перед сдачей
 
     public int Lives { get; private set; }
     public int Score { get; private set; }
@@ -62,7 +62,10 @@ public partial class GameState : Node
 	
 	public void AddLife()
 	{
-		Lives += 1;
+		if (Lives < 3)
+        {
+            Lives += 1;
+        }
 		EmitSignal(SignalName.LivesChanged, Lives);
 	}
 

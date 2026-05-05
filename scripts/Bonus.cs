@@ -7,6 +7,8 @@ public partial class Bonus : Area2D
 	[Export] public float FallSpeed = 150f;
 	public BonusType Type;
 
+	private bool _alreadyCollected = false;
+
 	public override void _Ready()
 	{
 		Modulate = ColorForType(Type);
@@ -27,11 +29,18 @@ public partial class Bonus : Area2D
 
 	private void OnBodyEntered(Node2D body)
 	{
-		if (body is Paddle)
-		{
-			EmitSignal(SignalName.Collected, (int)Type);
-			QueueFree();
-		}
+		if (_alreadyCollected) return;
+		if (body is not Paddle) return;
+
+		_alreadyCollected = true;
+		// Откладываем выполнение до завершения физического шага
+		CallDeferred(nameof(HandleCollection));
+	}
+	
+	private void HandleCollection()
+	{
+		EmitSignal(SignalName.Collected, (int)Type);
+		QueueFree();
 	}
 
 	private static Color ColorForType(BonusType type) => type switch

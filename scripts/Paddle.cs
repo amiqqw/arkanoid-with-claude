@@ -84,7 +84,8 @@ public partial class Paddle : CharacterBody2D
 	public void ApplySizeMultiplier(float multiplier, float duration)
 	{
 		Scale = new Vector2(_baseScaleX * multiplier, Scale.Y);
-		_sizeTimer.Start(duration + _sizeTimer.TimeLeft);
+		_sizeTimer.Stop();
+		_sizeTimer.Start(duration);
 	}
 
 	public void ResetSize()

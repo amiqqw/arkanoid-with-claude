@@ -52,6 +52,24 @@ public partial class HUD : CanvasLayer
 	private void UpdateLivesLabel()
 	{
 		_livesLabel.Text = $"Lives: {_currentLives}\nLvl: {_currentLevel}";
+		switch (_currentLives)
+		{
+			case 0:
+				_livesLabel.Modulate = Colors.Gray;
+				break;
+			case 1:
+				_livesLabel.Modulate = Colors.Red;
+				break;
+			case 2: 
+				_livesLabel.Modulate = Colors.Yellow;
+				break;
+			case 3: 
+				_livesLabel.Modulate = Colors.Green;
+				break;
+			default:
+				_livesLabel.Modulate = Colors.White;
+				break;
+		}
 	}
 
 	private void OnScoreChanged(int score, int hiScore)
