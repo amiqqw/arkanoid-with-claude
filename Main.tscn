@@ -88,7 +88,6 @@ theme_override_font_sizes/font_size = 11
 text = "Input: Keyboard (M to toggle)"
 
 [node name="HighScoresPanel" type="Panel" parent="HUD" unique_id=215109762]
-visible = false
 custom_minimum_size = Vector2(320, 510)
 anchors_preset = 8
 anchor_left = 0.5
@@ -123,7 +122,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="NameInputBox" type="HBoxContainer" parent="HUD/HighScoresPanel/VBox" unique_id=1609390850]
-visible = false
 layout_mode = 2
 alignment = 1
 
