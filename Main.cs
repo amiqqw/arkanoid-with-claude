@@ -179,6 +179,13 @@ public partial class Main : Node2D
 		int rows = layout.GetLength(0);
 		int cols = layout.GetLength(1);
 
+		var viewportSize = GetViewportRect().Size;
+		float cellWidth = viewportSize.X / cols;
+		float cellHeight = 25f;
+		float topMargin = 100f;
+
+		float scaleX = cellWidth / 50f;
+
 		for (int row = 0; row < rows; row++)
 		{
 			for (int col = 0; col < cols; col++)
@@ -186,17 +193,20 @@ public partial class Main : Node2D
 				int code = layout[row, col];
 				if (code == 0) continue;
 
-				Vector2 position = new(35 + col * 55, 100 + row * 25);
+				Vector2 position = new Vector2(
+					cellWidth * (col + 0.5f),
+					topMargin + cellHeight * row
+				);
 
 				if (code >= 10)
 				{
-					// Бонусный блок: 10/20/30 = прочность 1/2/3
 					int hits = code / 10;
 					var bonusBrick = BonusBrickScene.Instantiate<BonusBrick>();
 					bonusBrick.Position = position;
+					bonusBrick.Scale = new Vector2(scaleX, 1f);
 					bonusBrick.MaxHits = hits;
 					bonusBrick.ScorePerDestroy = hits * 100;
-					bonusBrick.DropType = (BonusType)GD.RandRange(0, 3);   // случайный тип
+					bonusBrick.DropType = (BonusType)GD.RandRange(0, 3);
 					bonusBrick.Destroyed += OnBrickDestroyed;
 					bonusBrick.BonusDrop += OnBonusDrop;
 					_bricksContainer.AddChild(bonusBrick);
@@ -206,6 +216,7 @@ public partial class Main : Node2D
 				{
 					var brick = BrickScene.Instantiate<Brick>();
 					brick.Position = position;
+					brick.Scale = new Vector2(scaleX, 1f);
 					brick.Indestructible = true;
 					brick.MaxHits = 1;
 					brick.ScorePerDestroy = 0;
@@ -215,6 +226,7 @@ public partial class Main : Node2D
 				{
 					var brick = BrickScene.Instantiate<Brick>();
 					brick.Position = position;
+					brick.Scale = new Vector2(scaleX, 1f);
 					brick.MaxHits = code;
 					brick.ScorePerDestroy = code * 100;
 					brick.Destroyed += OnBrickDestroyed;

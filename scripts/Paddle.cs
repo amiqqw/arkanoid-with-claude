@@ -7,7 +7,7 @@ public partial class Paddle : CharacterBody2D
 	[Signal] public delegate void InputModeChangedEventHandler(int mode);
 
 	public InputMode CurrentMode => _inputMode;
-	private InputMode _inputMode = InputMode.Keyboard;
+	private InputMode _inputMode = InputMode.Mouse;
 
 	private float _baseScaleX;
 	private Timer _sizeTimer;
@@ -67,8 +67,8 @@ public partial class Paddle : CharacterBody2D
 		float targetX = GetGlobalMousePosition().X;
 		float dx = targetX - Position.X;
 
-		float maxStep = Speed * (float)delta;
-		dx = Mathf.Clamp(dx, -maxStep, maxStep);
+		// float maxStep = Speed * (float)delta;
+		// dx = Mathf.Clamp(dx, -maxStep, maxStep);
 
 		Position += new Vector2(dx, 0);
 		_mouseVelocity = new Vector2(dx / (float)delta, 0);
