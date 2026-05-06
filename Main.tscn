@@ -20,11 +20,22 @@ BonusScene = ExtResource("6_trn2v")
 script = ExtResource("5_fos0i")
 
 [node name="TopBar" type="Control" parent="HUD" unique_id=2147106547]
-custom_minimum_size = Vector2(0, 36)
 layout_mode = 3
 anchors_preset = 10
 anchor_right = 1.0
+offset_bottom = 60.0
 grow_horizontal = 2
+
+[node name="BackgroundRect" type="ColorRect" parent="HUD/TopBar" unique_id=177703722]
+custom_minimum_size = Vector2(0, 66)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 6.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.3)
 
 [node name="ScoreLabel" type="Label" parent="HUD/TopBar" unique_id=1169235561]
 layout_mode = 1
@@ -39,10 +50,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -28.5
+offset_left = -30.0
 offset_top = 8.0
-offset_right = 28.5
-offset_bottom = 31.0
+offset_right = 30.0
+offset_bottom = 58.0
 grow_horizontal = 2
 text = "Lives: 3
 Lvl: 1"

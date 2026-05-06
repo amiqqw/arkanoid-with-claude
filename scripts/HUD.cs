@@ -116,14 +116,7 @@ public partial class HUD : CanvasLayer
 				ShowHighScoresPanel();
 				break;
 			case GamePhase.Win:
-				if (GameState.Instance.CurrentLevel == Levels.Count)
-				{
-					_messageLabel.Text = "ALL LEVELS CLEARED!\nPress R to restart with +20% ball speed";
-				}
-				else
-				{
-					_messageLabel.Text = "LEVEL CLEARED!\nPress R to continue";
-				}
+				_messageLabel.Text = "LEVEL CLEARED!\nPress SPACE to continue";
 				_messageLabel.Visible = true;
 				_highScoresPanel.Visible = false;
 				break;

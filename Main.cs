@@ -58,17 +58,22 @@ public partial class Main : Node2D
 
 		var phase = GameState.Instance.Phase;
 
-		if (keyEvent.Keycode == Key.Space && phase == GamePhase.Start)
+		if (keyEvent.Keycode == Key.Space)
 		{
-			GameState.Instance.ChangePhase(GamePhase.Playing);
+			if(phase == GamePhase.Start) GameState.Instance.ChangePhase(GamePhase.Playing);
+			if(phase == GamePhase.Win) AdvanceToNextLevel();
 		}
 
-		if (keyEvent.Keycode == Key.R)
+		if (keyEvent.Keycode == Key.W && phase == GamePhase.Playing)
+		{
+			GameState.Instance.ChangePhase(GamePhase.Win);
+		}
+
+		if (keyEvent.Keycode == Key.R && phase == GamePhase.GameOver)
 		{
 			if (_hud.IsAwaitingName) return;
 			
 			if (phase == GamePhase.GameOver) StartNewGame();
-			else if (phase == GamePhase.Win) AdvanceToNextLevel();
 		}
 	}
 
@@ -85,10 +90,9 @@ public partial class Main : Node2D
 	{
 		int nextLevel = GameState.Instance.CurrentLevel + 1;
 
-		if (nextLevel > Levels.Count)
+		if (nextLevel > Levels.HandcraftedCount)
 		{
-			GameState.Instance.IncreaseSpeedForNewLoop();
-			nextLevel = 1;
+			GameState.Instance.IncreaseSpeed(0.1f);
 		}
 
 		GameState.Instance.SetLevel(nextLevel);
@@ -109,7 +113,10 @@ public partial class Main : Node2D
 			item.QueueFree();
 		_balls.Clear();
 
-		var layout = Levels.Layouts[level - 1];
+		int[,] layout = level <= Levels.HandcraftedCount
+			? Levels.Layouts[level - 1]
+			: Levels.GenerateRandom();
+
 		SpawnBricks(layout);
 
 		var ball = BallScene.Instantiate<Ball>();
@@ -182,7 +189,7 @@ public partial class Main : Node2D
 		var viewportSize = GetViewportRect().Size;
 		float cellWidth = viewportSize.X / cols;
 		float cellHeight = 25f;
-		float topMargin = 100f;
+		float topMargin = 126f;
 
 		float scaleX = cellWidth / 50f;
 

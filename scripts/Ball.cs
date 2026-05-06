@@ -6,6 +6,8 @@ public partial class Ball : CharacterBody2D
 
 	[Export] public float Speed = 300f;
 
+	[Export] public float TopBoundary = 66f;
+
 	[Export] public float MaxSpeedMultiplier = 2f;
 	[Export] public float RallySpeedup = 0.05f;
 	[Export] public float PaddleHitMaxAngle = 60f;
@@ -45,7 +47,7 @@ public partial class Ball : CharacterBody2D
 
 		Position = new Vector2(
 			Mathf.Clamp(Position.X, 6, size.X - 6),
-			Mathf.Max(Position.Y, 6)
+			Mathf.Max(Position.Y, TopBoundary)
 		);
 
 		// Отскоки от стен экрана — также триггерят rally
@@ -60,7 +62,7 @@ public partial class Ball : CharacterBody2D
 			_direction.X = -_direction.X;
 			wallBounce = true;
 		}
-		if (Position.Y <= 6 && _direction.Y < 0)
+		if (Position.Y <= TopBoundary && _direction.Y < 0)
 		{
 			_direction.Y = -_direction.Y;
 			wallBounce = true;
