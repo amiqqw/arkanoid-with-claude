@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bheei4s5aanxg" path="res://sprites/ohh.png" id="2_6kxou"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ujhtd"]
-size = Vector2(84, 18)
+size = Vector2(84, 14)
 
 [node name="Paddle" type="CharacterBody2D" unique_id=1845857891]
 collision_layer = 2
@@ -16,14 +16,14 @@ shape = SubResource("RectangleShape2D_ujhtd")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1398319638]
 offset_left = -42.0
-offset_top = -9.0
+offset_top = -7.0
 offset_right = 42.0
-offset_bottom = 9.0
+offset_bottom = 7.0
 texture = ExtResource("2_6kxou")
 expand_mode = 1
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1976748104]
 offset_left = -42.0
-offset_top = -9.0
+offset_top = -7.0
 offset_right = 42.0
-offset_bottom = 9.0
+offset_bottom = 7.0

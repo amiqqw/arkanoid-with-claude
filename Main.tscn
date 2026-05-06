@@ -64,6 +64,10 @@ text = "Hi Score: 0"
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 285.0
+offset_right = 1.0
+offset_bottom = 285.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 24
@@ -85,7 +89,7 @@ text = "Input: Keyboard (M to toggle)"
 
 [node name="HighScoresPanel" type="Panel" parent="HUD" unique_id=215109762]
 visible = false
-custom_minimum_size = Vector2(300, 360)
+custom_minimum_size = Vector2(320, 510)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -116,10 +120,12 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="NameInputBox" type="HBoxContainer" parent="HUD/HighScoresPanel/VBox" unique_id=1609390850]
 visible = false
 layout_mode = 2
+alignment = 1
 
 [node name="Label" type="Label" parent="HUD/HighScoresPanel/VBox/NameInputBox" unique_id=991550877]
 custom_minimum_size = Vector2(90, 0)

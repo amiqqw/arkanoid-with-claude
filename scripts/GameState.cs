@@ -12,7 +12,7 @@ public partial class GameState : Node
 
     public const int StartingLives = 3;
     public const float SpeedIncreasePerLoop = 0.2f;
-    private int _startingLevel = 3; //! поменять на 1 перед сдачей
+    private int _startingLevel = 1; //! поменять на 1 перед сдачей
     private const int _maxLives = 5;
 
     public int Lives { get; private set; }

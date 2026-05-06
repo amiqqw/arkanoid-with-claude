@@ -32,12 +32,7 @@ public partial class Main : Node2D
 		_bonusesContainer = new Node { Name = "Bonuses" };
 		AddChild(_bonusesContainer);
 
-		_paddle = PaddleScene.Instantiate<Paddle>();
-		AddChild(_paddle);
-
 		_hud = GetNode<HUD>("HUD");
-		_paddle.InputModeChanged += _hud.OnPaddleInputModeChanged;
-		_hud.OnPaddleInputModeChanged((int)_paddle.CurrentMode);
 
 		var probe = BallScene.Instantiate<Ball>();
 		_baseBallSpeed = probe.Speed;
@@ -102,6 +97,8 @@ public partial class Main : Node2D
 
 	private void LoadLevel(int level)
 	{
+		LoadGameField();
+
 		foreach (Node child in _bricksContainer.GetChildren())
 			child.QueueFree();
 
@@ -122,6 +119,41 @@ public partial class Main : Node2D
 		_paddle.ResetSize();
 
 		GameState.Instance.ChangePhase(GamePhase.Start);
+	}
+
+	private void LoadGameField()
+	{
+		if (_paddle != null) return;
+
+		_paddle = PaddleScene.Instantiate<Paddle>();
+		_paddle.Position = PaddleStartPosition;
+		AddChild(_paddle);
+
+		_paddle.InputModeChanged += _hud.OnPaddleInputModeChanged;
+		_hud.OnPaddleInputModeChanged((int)_paddle.CurrentMode);
+	}
+
+	private void UnloadGameField()
+	{
+		// Блоки
+		foreach (Node child in _bricksContainer.GetChildren())
+			child.QueueFree();
+
+		// Бонусы
+		foreach (Node child in _bonusesContainer.GetChildren())
+			child.QueueFree();
+
+		// Мячи
+		foreach (var ball in _balls)
+			ball.QueueFree();
+		_balls.Clear();
+
+		// Paddle
+		if (_paddle != null)
+		{
+			_paddle.QueueFree();
+			_paddle = null;
+		}
 	}
 	
 	private void AddBall(Ball ball, Vector2 position, Vector2? direction = null)
@@ -258,6 +290,11 @@ public partial class Main : Node2D
 		// Input.MouseMode = (phase == GamePhase.Playing)
 		// 	? Input.MouseModeEnum.Hidden
 		// 	: Input.MouseModeEnum.Visible;
+
+		if (phase == GamePhase.GameOver || phase == GamePhase.Win)
+		{
+			UnloadGameField();
+		}
 	}
 
 	private void SpawnExtraBalls()
@@ -270,8 +307,10 @@ public partial class Main : Node2D
 
 		foreach (var pos in spawnPoints)
 		{
-			var clone = BallScene.Instantiate<Ball>();
-			AddBall(clone, pos, new Vector2(-0.5f, -1).Normalized());
+			var clone1 = BallScene.Instantiate<Ball>();
+			var clone2 = BallScene.Instantiate<Ball>();
+			AddBall(clone1, pos, new Vector2(-0.5f, -1).Normalized());
+			AddBall(clone2, pos, new Vector2(-0.2f, -0.8f).Normalized());
 		}
 	}
 

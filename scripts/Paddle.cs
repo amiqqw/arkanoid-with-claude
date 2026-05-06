@@ -11,6 +11,7 @@ public partial class Paddle : CharacterBody2D
 
 	private float _baseScaleX;
 	private Timer _sizeTimer;
+	private Vector2 _mouseVelocity = Vector2.Zero;
 
 	public override void _Ready()
 	{
@@ -48,6 +49,8 @@ public partial class Paddle : CharacterBody2D
 	private void ToggleInputMode()
 	{
 		_inputMode = (_inputMode == InputMode.Keyboard) ? InputMode.Mouse : InputMode.Keyboard;
+		_mouseVelocity = Vector2.Zero;
+		Velocity= Vector2.Zero;
 		GD.Print($"Paddle input mode: {_inputMode}");
 		EmitSignal(SignalName.InputModeChanged, (int)_inputMode);
 	}
@@ -68,6 +71,7 @@ public partial class Paddle : CharacterBody2D
 		dx = Mathf.Clamp(dx, -maxStep, maxStep);
 
 		Position += new Vector2(dx, 0);
+		_mouseVelocity = new Vector2(dx / (float)delta, 0);
 
 		Velocity = Vector2.Zero;
 	}
@@ -98,4 +102,7 @@ public partial class Paddle : CharacterBody2D
 	{
 		Scale = new Vector2(_baseScaleX, Scale.Y);
 	}
+
+	public Vector2 GetCurrentVelocity() => (_inputMode == InputMode.Keyboard) ? Velocity : _mouseVelocity;
+
 }
