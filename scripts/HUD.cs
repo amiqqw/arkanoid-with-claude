@@ -4,6 +4,10 @@ using System.Xml.Serialization;
 
 public partial class HUD : CanvasLayer
 {
+	[Signal] public delegate void StartGameRequestedEventHandler();
+	[Signal] public delegate void ResetScoresRequestedEventHandler();
+	[Signal] public delegate void BackToMenuRequestedEventHandler();
+
 	private Label _scoreLabel;
 	private Label _livesLabel;
 	private Label _hiScoreLabel;
@@ -19,6 +23,16 @@ public partial class HUD : CanvasLayer
 	private int _pendingScore = 0;
 	public bool IsAwaitingName => _newEntryIndex != -1 && _nameInputBox.Visible;
 
+	private Panel _mainMenuPanel;
+	private Button _startButton;
+	private Button _viewScoresButton;
+	private Button _resetButton;
+	private Button _quitButton;
+	private Button _backButton;
+	private Label _hintLabel;
+	private ConfirmationDialog _resetConfirmDialog;
+	private bool _viewingScoresFromMenu = false;
+
 	private int _currentLives;
 	private int _currentLevel;
 
@@ -26,15 +40,34 @@ public partial class HUD : CanvasLayer
 	public override void _Ready()
 	{
 		_messageLabel = GetNode<Label>("MessageLabel");
-		_inputModeLabel = GetNode<Label>("InputModeLabel");
-		_timeLabel = GetNode<Label>("TimeLabel");
+		_inputModeLabel = GetNode<Label>("BottomBar/InputModeLabel");
+		_timeLabel = GetNode<Label>("BottomBar/TimeLabel");
+
 		_scoreLabel   = GetNode<Label>("TopBar/ScoreLabel");
 		_livesLabel   = GetNode<Label>("TopBar/LivesLabel");
 		_hiScoreLabel = GetNode<Label>("TopBar/HiScoreLabel");
+
 		_highScoresPanel = GetNode<Panel>("HighScoresPanel");
 		_scoresLabel     = GetNode<Label>("HighScoresPanel/VBox/ScoresLabel");
 		_nameInputBox    = GetNode<HBoxContainer>("HighScoresPanel/VBox/NameInputBox");
 		_nameInput       = GetNode<LineEdit>("HighScoresPanel/VBox/NameInputBox/NameInput");
+		_hintLabel       = GetNode<Label>("HighScoresPanel/VBox/HintLabel");
+		_backButton      = GetNode<Button>("HighScoresPanel/VBox/BackButton");
+		
+		_mainMenuPanel    = GetNode<Panel>("MainMenuPanel");
+		_startButton      = GetNode<Button>("MainMenuPanel/MarginContainer/VBox/StartButton");
+		_viewScoresButton = GetNode<Button>("MainMenuPanel/MarginContainer/VBox/ViewScoresButton");
+		_resetButton      = GetNode<Button>("MainMenuPanel/MarginContainer/VBox/ResetButton");
+		_quitButton       = GetNode<Button>("MainMenuPanel/MarginContainer/VBox/QuitButton");
+
+		_resetConfirmDialog = GetNode<ConfirmationDialog>("ResetConfirmDialog");
+		_resetConfirmDialog.Confirmed += () => EmitSignal(SignalName.ResetScoresRequested);
+
+		_startButton.Pressed      += () => EmitSignal(SignalName.StartGameRequested);
+		_resetButton.Pressed      += () => _resetConfirmDialog.PopupCentered();
+		_quitButton.Pressed       += () => GetTree().Quit();
+		_viewScoresButton.Pressed += OnViewScoresPressed;
+		_backButton.Pressed       += OnBackPressed;
 		
 		_nameInput.TextSubmitted += OnNameSubmitted;
 
@@ -106,29 +139,44 @@ public partial class HUD : CanvasLayer
 	private void OnPhaseChange(int newPhaseInt)
 	{
 		var phase = (GamePhase)newPhaseInt;
+		_viewingScoresFromMenu = false;   // сброс при любой смене фазы
 
 		switch (phase)
 		{
+			case GamePhase.MainMenu:
+				_mainMenuPanel.Visible = true;
+				_highScoresPanel.Visible = false;
+				_messageLabel.Visible = false;
+				break;
+
 			case GamePhase.Start:
+				_mainMenuPanel.Visible = false;
+				_highScoresPanel.Visible = false;
 				_messageLabel.Text = "Press SPACE to start";
 				_messageLabel.Visible = true;
-				_highScoresPanel.Visible = false;
 				break;
+
 			case GamePhase.Playing:
-				_messageLabel.Visible = false;
+				_mainMenuPanel.Visible = false;
 				_highScoresPanel.Visible = false;
+				_messageLabel.Visible = false;
 				break;
+
 			case GamePhase.GameOver:
+				_mainMenuPanel.Visible = false;
 				_messageLabel.Text = "GAME OVER";
 				_messageLabel.Visible = true;
+				_hintLabel.Text = "Press R to restart";
+				_hintLabel.Visible = true;
+				_backButton.Visible = true;
 				ShowHighScoresPanel();
 				break;
+
 			case GamePhase.Win:
+				_mainMenuPanel.Visible = false;
+				_highScoresPanel.Visible = false;
 				_messageLabel.Text = "LEVEL CLEARED!\nPress SPACE to continue";
 				_messageLabel.Visible = true;
-				_highScoresPanel.Visible = false;
-				break;
-			default:
 				break;
 		}
 	}
@@ -198,5 +246,36 @@ public partial class HUD : CanvasLayer
 		}
 
 		_scoresLabel.Text = sb.ToString();
+	}
+
+	private void OnViewScoresPressed()
+	{
+		_viewingScoresFromMenu = true;
+		_mainMenuPanel.Visible = false;
+		_highScoresPanel.Visible = true;
+		_nameInputBox.Visible = false;
+		_hintLabel.Visible = false;
+		_backButton.Visible = true;
+		UpdateScoresText();
+	}
+
+	private void OnBackPressed()
+	{
+		if (_viewingScoresFromMenu)
+		{
+			_viewingScoresFromMenu = false;
+			_highScoresPanel.Visible = false;
+			_mainMenuPanel.Visible = true;
+		}
+		else
+		{
+			// Из GameOver — через сигнал, чтобы Main сам сменил фазу
+			EmitSignal(SignalName.BackToMenuRequested);
+		}
+	}
+
+	public void RefreshScoresDisplay()
+	{
+		UpdateScoresText();
 	}
 }

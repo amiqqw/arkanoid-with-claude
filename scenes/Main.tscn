@@ -71,44 +71,18 @@ offset_bottom = 31.0
 grow_horizontal = 0
 text = "Hi Score: 0"
 
-[node name="MessageLabel" type="Label" parent="HUD" unique_id=1510571933]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 1.0
-offset_top = 285.0
-offset_right = 1.0
-offset_bottom = 285.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 24
-text = "Press SPACE to start"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="InputModeLabel" type="Label" parent="HUD" unique_id=656993750]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = -22.0
-offset_right = 163.0
-offset_bottom = -6.0
-grow_vertical = 0
-theme_override_font_sizes/font_size = 11
-text = "Input: Keyboard (M to toggle)"
-
 [node name="HighScoresPanel" type="Panel" parent="HUD" unique_id=215109762]
+visible = false
 custom_minimum_size = Vector2(320, 510)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -160.0
+offset_top = -255.0
+offset_right = 160.0
+offset_bottom = 255.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -146,18 +120,150 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 max_length = 12
 
+[node name="BackButton" type="Button" parent="HUD/HighScoresPanel/VBox" unique_id=1474446109]
+layout_mode = 2
+text = "Back to Menu"
+
 [node name="HintLabel" type="Label" parent="HUD/HighScoresPanel/VBox" unique_id=683182140]
 layout_mode = 2
 text = "Press R to restart"
 horizontal_alignment = 1
 
-[node name="TimeLabel" type="Label" parent="HUD" unique_id=2053734184]
+[node name="MainMenuPanel" type="Panel" parent="HUD" unique_id=1706491323]
+custom_minimum_size = Vector2(320, 400)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -200.0
+offset_right = 160.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD/MainMenuPanel" unique_id=759951366]
+custom_minimum_size = Vector2(320, 400)
+layout_mode = 0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 321.0
+offset_bottom = 399.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="HUD/MainMenuPanel/MarginContainer" unique_id=401721260]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Label" type="Label" parent="HUD/MainMenuPanel/MarginContainer/VBox" unique_id=71539048]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.57396513, 1, 1)
+theme_override_font_sizes/font_size = 28
+text = "ARKANOID
+by AMI"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Control" type="Control" parent="HUD/MainMenuPanel/MarginContainer/VBox" unique_id=1119010288]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="StartButton" type="Button" parent="HUD/MainMenuPanel/MarginContainer/VBox" unique_id=730496319]
+layout_mode = 2
+text = "Start Game"
+
+[node name="ViewScoresButton" type="Button" parent="HUD/MainMenuPanel/MarginContainer/VBox" unique_id=336264329]
+layout_mode = 2
+text = "View High Scores"
+
+[node name="ResetButton" type="Button" parent="HUD/MainMenuPanel/MarginContainer/VBox" unique_id=246583534]
+layout_mode = 2
+text = "Reset High Scores"
+
+[node name="QuitButton" type="Button" parent="HUD/MainMenuPanel/MarginContainer/VBox" unique_id=1740233041]
+layout_mode = 2
+text = "Quit"
+
+[node name="MenuHintLabel" type="Label" parent="HUD/MainMenuPanel/MarginContainer/VBox" unique_id=163648090]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_vertical = 11
+theme_override_colors/font_color = Color(1, 0.57396513, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "How to play:
+1. Move with arrow keys or mouse
+2. Hit :3 to gain score
+3. Hit and collect 🙏 to gain powerups
+4. Don't lose your balls!"
+horizontal_alignment = 1
+vertical_alignment = 2
+autowrap_mode = 3
+
+[node name="MessageLabel" type="Label" parent="HUD" unique_id=1510571933]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 1.0
+offset_bottom = 35.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 24
+text = "Press SPACE to start"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResetConfirmDialog" type="ConfirmationDialog" parent="HUD" unique_id=716464692]
+oversampling_override = 1.0
+title = "Reset High Scores"
+initial_position = 2
+size = Vector2i(373, 100)
+dialog_text = "Are you sure you want to clear all high scores?"
+
+[node name="BottomBar" type="Control" parent="HUD" unique_id=1515862990]
+layout_mode = 3
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="BackgroundRect" type="ColorRect" parent="HUD/BottomBar" unique_id=675342371]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.3)
+
+[node name="InputModeLabel" type="Label" parent="HUD/BottomBar" unique_id=656993750]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -22.0
+offset_right = 163.0
+offset_bottom = -6.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 11
+text = "Input: Keyboard (M to toggle)"
+
+[node name="TimeLabel" type="Label" parent="HUD/BottomBar" unique_id=2053734184]
+layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -52.0
+offset_left = -72.0
 offset_top = -22.0
 offset_right = -8.0
 offset_bottom = -6.0

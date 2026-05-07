@@ -33,6 +33,9 @@ public partial class Main : Node2D
 		AddChild(_bonusesContainer);
 
 		_hud = GetNode<HUD>("HUD");
+		_hud.StartGameRequested   += StartNewGame;
+		_hud.ResetScoresRequested += ResetHighScores;
+		_hud.BackToMenuRequested  += ReturnToMenu;
 
 		var probe = BallScene.Instantiate<Ball>();
 		_baseBallSpeed = probe.Speed;
@@ -40,8 +43,6 @@ public partial class Main : Node2D
 
 		GameState.Instance.GameOver += OnGameOver;
 		GameState.Instance.PhaseChanged += OnPhaseChanged;
-
-		StartNewGame();
 	}
 
 	public override void _Process(double delta)
@@ -60,8 +61,8 @@ public partial class Main : Node2D
 
 		if (keyEvent.Keycode == Key.Space)
 		{
-			if(phase == GamePhase.Start) GameState.Instance.ChangePhase(GamePhase.Playing);
-			if(phase == GamePhase.Win) AdvanceToNextLevel();
+			if (phase == GamePhase.Start) GameState.Instance.ChangePhase(GamePhase.Playing);
+			if (phase == GamePhase.Win) AdvanceToNextLevel();
 		}
 
 		if (keyEvent.Keycode == Key.W && phase == GamePhase.Playing)
@@ -72,9 +73,21 @@ public partial class Main : Node2D
 		if (keyEvent.Keycode == Key.R && phase == GamePhase.GameOver)
 		{
 			if (_hud.IsAwaitingName) return;
-			
+
 			if (phase == GamePhase.GameOver) StartNewGame();
 		}
+	}
+	
+	private void ResetHighScores()
+	{
+		HighScoreTable.Instance.Clear();
+		GameState.Instance.RefreshHiScoreFromTable();
+		_hud.RefreshScoresDisplay();
+	}
+
+	private void ReturnToMenu()
+	{
+		GameState.Instance.ChangePhase(GamePhase.MainMenu);
 	}
 
 	private void StartNewGame()
@@ -311,7 +324,7 @@ public partial class Main : Node2D
 		// 	? Input.MouseModeEnum.Hidden
 		// 	: Input.MouseModeEnum.Visible;
 
-		if (phase == GamePhase.GameOver || phase == GamePhase.Win)
+		if (phase == GamePhase.GameOver || phase == GamePhase.Win || phase == GamePhase.MainMenu)
 		{
 			UnloadGameField();
 		}
