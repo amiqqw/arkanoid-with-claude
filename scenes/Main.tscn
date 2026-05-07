@@ -132,22 +132,6 @@ theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MenuButtonsBox" type="VBoxContainer" parent="HUD/HighScoresPanel/VBox" unique_id=1015682117]
-layout_mode = 2
-alignment = 1
-
-[node name="StartButton" type="Button" parent="HUD/HighScoresPanel/VBox/MenuButtonsBox" unique_id=1727880818]
-layout_mode = 2
-text = "Start Game"
-
-[node name="ResetButton" type="Button" parent="HUD/HighScoresPanel/VBox/MenuButtonsBox" unique_id=1147929465]
-layout_mode = 2
-text = "Reset High Scores"
-
-[node name="QuitButton" type="Button" parent="HUD/HighScoresPanel/VBox/MenuButtonsBox" unique_id=1509508317]
-layout_mode = 2
-text = "Quit"
-
 [node name="NameInputBox" type="HBoxContainer" parent="HUD/HighScoresPanel/VBox" unique_id=1609390850]
 layout_mode = 2
 alignment = 1
