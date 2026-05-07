@@ -32,7 +32,7 @@ public partial class GameState : Node
         Lives = StartingLives;
         Score = 0;
         HiScore = HighScoreTable.Instance.HighestScore;
-        Phase = GamePhase.MainMenu;
+        Phase = GamePhase.Start;
         CurrentLevel = _startingLevel;
         BallSpeedMultiplier = 1f;
     }

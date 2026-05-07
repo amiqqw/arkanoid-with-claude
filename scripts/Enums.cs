@@ -6,7 +6,6 @@ public enum InputMode
 
 public enum GamePhase
 {
-    MainMenu,
 	Start,
 	Playing,
 	GameOver,
