@@ -9,6 +9,7 @@ public partial class HUD : CanvasLayer
 	private Label _hiScoreLabel;
 	private Label _messageLabel;
 	private Label _inputModeLabel;
+	private Label _timeLabel;
 
 	private Panel _highScoresPanel;
 	private Label _scoresLabel;
@@ -24,15 +25,16 @@ public partial class HUD : CanvasLayer
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		_scoreLabel = GetNode<Label>("TopBar/ScoreLabel");
-		_livesLabel = GetNode<Label>("TopBar/LivesLabel");
-		_hiScoreLabel = GetNode<Label>("TopBar/HiScoreLabel");
 		_messageLabel = GetNode<Label>("MessageLabel");
 		_inputModeLabel = GetNode<Label>("InputModeLabel");
+		_timeLabel = GetNode<Label>("TimeLabel");
+		_scoreLabel   = GetNode<Label>("TopBar/ScoreLabel");
+		_livesLabel   = GetNode<Label>("TopBar/LivesLabel");
+		_hiScoreLabel = GetNode<Label>("TopBar/HiScoreLabel");
 		_highScoresPanel = GetNode<Panel>("HighScoresPanel");
 		_scoresLabel     = GetNode<Label>("HighScoresPanel/VBox/ScoresLabel");
 		_nameInputBox    = GetNode<HBoxContainer>("HighScoresPanel/VBox/NameInputBox");
-		_nameInput = GetNode<LineEdit>("HighScoresPanel/VBox/NameInputBox/NameInput");
+		_nameInput       = GetNode<LineEdit>("HighScoresPanel/VBox/NameInputBox/NameInput");
 		
 		_nameInput.TextSubmitted += OnNameSubmitted;
 
@@ -42,6 +44,7 @@ public partial class HUD : CanvasLayer
 		gs.LivesChanged += OnLivesChanged;
 		gs.PhaseChanged += OnPhaseChange;
 		gs.LevelChanged += OnLevelChanged;
+		gs.TimeChanged += OnTimeChanged;
 
 		_currentLives = gs.Lives;
 		_currentLevel = gs.CurrentLevel;
@@ -61,6 +64,11 @@ public partial class HUD : CanvasLayer
 	{
 		_currentLives = lives;
 		UpdateLivesLabel();
+	}
+
+	private void OnTimeChanged(int seconds)
+	{
+		_timeLabel.Text = $"Time: {seconds/60}m {seconds % 60}s";
 	}
 
 	private void UpdateLivesLabel()
@@ -125,9 +133,6 @@ public partial class HUD : CanvasLayer
 		}
 	}
 
-	/// <summary>
-	/// Вызывается из Main, когда Paddle переключает режим ввода.
-	/// </summary>
 	public void OnPaddleInputModeChanged(int modeInt)
 	{
 		var mode = (InputMode)modeInt;

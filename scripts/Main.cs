@@ -81,6 +81,7 @@ public partial class Main : Node2D
 	{
 		GameState.Instance.ResetLives();
 		GameState.Instance.ResetScore();
+		GameState.Instance.ResetTime();
 		GameState.Instance.ResetProgression();
 
 		LoadLevel(GameState.Instance.CurrentLevel);

@@ -9,11 +9,15 @@ public partial class GameState : Node
     [Signal] public delegate void GameOverEventHandler();
     [Signal] public delegate void PhaseChangedEventHandler(int newPhase);
     [Signal] public delegate void LevelChangedEventHandler(int level);
+    [Signal] public delegate void TimeChangedEventHandler(int seconds);
 
     public const int StartingLives = 3;
     public const float SpeedIncreasePerLoop = 0.2f;
     private int _startingLevel = 3; //! поменять на 1 перед сдачей
     private const int _maxLives = 5;
+
+    public int ElapsedSeconds { get; private set; }
+    private float _timeAccumulator = 0f;
 
     public int Lives { get; private set; }
     public int Score { get; private set; }
@@ -32,6 +36,28 @@ public partial class GameState : Node
         CurrentLevel = _startingLevel;
         BallSpeedMultiplier = 1f;
     }
+
+    public override void _Process(double delta)
+    {
+        if (Phase != GamePhase.Playing) return;
+
+        _timeAccumulator += (float)delta;
+
+        int newSeconds = (int)_timeAccumulator;
+        if (newSeconds != ElapsedSeconds)
+        {
+            ElapsedSeconds = newSeconds;
+            EmitSignal(SignalName.TimeChanged, ElapsedSeconds);
+        }
+    }
+
+    public void ResetTime()
+    {
+        _timeAccumulator = 0f;
+        ElapsedSeconds = 0;
+        EmitSignal(SignalName.TimeChanged, 0);
+    }
+
 
     public void ChangePhase(GamePhase newPhase)
     {
