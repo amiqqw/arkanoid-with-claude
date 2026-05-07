@@ -112,4 +112,10 @@ public partial class HighScoreTable : Node
             GD.PrintErr($"HighScoreTable: failed to save scores. {e.Message}");
         }
     }
+
+    public void Clear()
+    {
+        Entries.Clear();
+        Save();
+    }
 }
