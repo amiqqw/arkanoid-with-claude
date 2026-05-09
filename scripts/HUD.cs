@@ -147,13 +147,15 @@ public partial class HUD : CanvasLayer
 				_mainMenuPanel.Visible = true;
 				_highScoresPanel.Visible = false;
 				_messageLabel.Visible = false;
+				_livesLabel.Visible = false;
 				break;
 
 			case GamePhase.Start:
 				_mainMenuPanel.Visible = false;
 				_highScoresPanel.Visible = false;
 				_messageLabel.Text = "Press SPACE to start";
-				_messageLabel.Visible = true;
+				MessageLabelSetDefault();
+				_livesLabel.Visible = true;
 				break;
 
 			case GamePhase.Playing:
@@ -165,10 +167,11 @@ public partial class HUD : CanvasLayer
 			case GamePhase.GameOver:
 				_mainMenuPanel.Visible = false;
 				_messageLabel.Text = "GAME OVER";
-				_messageLabel.Visible = true;
+				MessageLabelSetGameOver();
 				_hintLabel.Text = "Press R to restart";
 				_hintLabel.Visible = true;
 				_backButton.Visible = true;
+				_livesLabel.Visible = false;
 				ShowHighScoresPanel();
 				break;
 
@@ -176,10 +179,26 @@ public partial class HUD : CanvasLayer
 				_mainMenuPanel.Visible = false;
 				_highScoresPanel.Visible = false;
 				_messageLabel.Text = "LEVEL CLEARED!\nPress SPACE to continue";
-				_messageLabel.Visible = true;
+				MessageLabelSetDefault();
+				_messageLabel.Modulate = Colors.Green;
 				break;
 		}
 	}
+
+	private void MessageLabelSetDefault()
+	{
+		_messageLabel.Position = new Vector2(0, 240);
+		_messageLabel.Visible = true;
+		_messageLabel.Modulate = Colors.White;
+	}
+	
+	private void MessageLabelSetGameOver()
+	{
+		_messageLabel.Position = new Vector2(0, -310);
+		_messageLabel.Visible = true;
+		_messageLabel.Modulate = Colors.Red;
+	}
+
 
 	public void OnPaddleInputModeChanged(int modeInt)
 	{

@@ -17,7 +17,7 @@ public partial class Main : Node2D
 	private Node _bricksContainer;
 
 	private static readonly Vector2 BallStartPosition = new(240, 320);
-	private static readonly Vector2 PaddleStartPosition = new(240, 580);
+	private static readonly Vector2 PaddleStartPosition = new(240, 550);
 
 	private float _baseBallSpeed;
 	private int _destructibleBricksRemaining;

@@ -9,7 +9,7 @@ public partial class Ball : CharacterBody2D
 	[Export] public float TopBoundary = 66f;
 
 	[Export] public float MaxSpeedMultiplier = 2f;
-	[Export] public float RallySpeedup = 0.05f;
+	[Export] public float RallySpeedup = 0.08f;
 	[Export] public float PaddleHitMaxAngle = 60f;
 	[Export] public float PaddleVelocityInfluence = 0.0005f;
 
@@ -68,9 +68,13 @@ public partial class Ball : CharacterBody2D
 			wallBounce = true;
 		}
 
-		if (wallBounce) IncreaseRallySpeed();
+		if (wallBounce)
+		{
+			IncreaseRallySpeed();
+			IncreaseRallySpeed();
+		}
 
-		if (Position.Y >= size.Y)
+		if (Position.Y >= size.Y - 36)
 		{
 			EmitSignal(SignalName.FellDown);
 		}

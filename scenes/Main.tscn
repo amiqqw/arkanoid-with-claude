@@ -72,17 +72,16 @@ grow_horizontal = 0
 text = "Hi Score: 0"
 
 [node name="HighScoresPanel" type="Panel" parent="HUD" unique_id=215109762]
-visible = false
 custom_minimum_size = Vector2(320, 510)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -160.0
-offset_top = -255.0
-offset_right = 160.0
-offset_bottom = 255.0
+offset_left = -240.0
+offset_top = -320.0
+offset_right = 240.0
+offset_bottom = 322.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -93,6 +92,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Control" type="Control" parent="HUD/HighScoresPanel/VBox" unique_id=1801491838]
+custom_minimum_size = Vector2(0, 66)
+layout_mode = 2
 
 [node name="Title" type="Label" parent="HUD/HighScoresPanel/VBox" unique_id=2140040299]
 layout_mode = 2
@@ -130,6 +133,7 @@ text = "Press R to restart"
 horizontal_alignment = 1
 
 [node name="MainMenuPanel" type="Panel" parent="HUD" unique_id=1706491323]
+visible = false
 custom_minimum_size = Vector2(320, 400)
 anchors_preset = 8
 anchor_left = 0.5
@@ -203,27 +207,6 @@ horizontal_alignment = 1
 vertical_alignment = 2
 autowrap_mode = 3
 
-[node name="MessageLabel" type="Label" parent="HUD" unique_id=1510571933]
-visible = false
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 1.0
-offset_bottom = 35.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 24
-text = "Press SPACE to start"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ResetConfirmDialog" type="ConfirmationDialog" parent="HUD" unique_id=716464692]
-oversampling_override = 1.0
-title = "Reset High Scores"
-initial_position = 2
-size = Vector2i(373, 100)
-dialog_text = "Are you sure you want to clear all high scores?"
-
 [node name="BottomBar" type="Control" parent="HUD" unique_id=1515862990]
 layout_mode = 3
 anchors_preset = 12
@@ -273,3 +256,25 @@ theme_override_font_sizes/font_size = 11
 text = "Time: 0m 0s"
 horizontal_alignment = 2
 vertical_alignment = 2
+
+[node name="MessageLabel" type="Label" parent="HUD" unique_id=1510571933]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = -310.0
+offset_right = 1.0
+offset_bottom = -270.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 24
+text = "GAME OVER"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResetConfirmDialog" type="ConfirmationDialog" parent="HUD" unique_id=716464692]
+oversampling_override = 1.0
+title = "Reset High Scores"
+initial_position = 2
+size = Vector2i(373, 100)
+dialog_text = "Are you sure you want to clear all high scores?"
