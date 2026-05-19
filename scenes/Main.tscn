@@ -17,123 +17,10 @@ BonusBrickScene = ExtResource("5_wp0k4")
 BonusScene = ExtResource("6_bjd11")
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1328610632]
+process_mode = 3
 script = ExtResource("7_qmy6f")
 
-[node name="TopBar" type="Control" parent="HUD" unique_id=2147106547]
-layout_mode = 3
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 60.0
-grow_horizontal = 2
-
-[node name="BackgroundRect" type="ColorRect" parent="HUD/TopBar" unique_id=177703722]
-custom_minimum_size = Vector2(0, 66)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_bottom = 6.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.3)
-
-[node name="ScoreLabel" type="Label" parent="HUD/TopBar" unique_id=1169235561]
-layout_mode = 1
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 69.0
-offset_bottom = 31.0
-text = "Score: 0"
-
-[node name="LivesLabel" type="Label" parent="HUD/TopBar" unique_id=1864167159]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -30.0
-offset_top = 8.0
-offset_right = 30.0
-offset_bottom = 58.0
-grow_horizontal = 2
-text = "Lives: 3
-Lvl: 1"
-horizontal_alignment = 1
-
-[node name="HiScoreLabel" type="Label" parent="HUD/TopBar" unique_id=1685362129]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -89.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = 31.0
-grow_horizontal = 0
-text = "Hi Score: 0"
-
-[node name="HighScoresPanel" type="Panel" parent="HUD" unique_id=215109762]
-custom_minimum_size = Vector2(320, 510)
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -240.0
-offset_top = -320.0
-offset_right = 240.0
-offset_bottom = 322.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBox" type="VBoxContainer" parent="HUD/HighScoresPanel" unique_id=2016339880]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Control" type="Control" parent="HUD/HighScoresPanel/VBox" unique_id=1801491838]
-custom_minimum_size = Vector2(0, 66)
-layout_mode = 2
-
-[node name="Title" type="Label" parent="HUD/HighScoresPanel/VBox" unique_id=2140040299]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "HIGH SCORES"
-horizontal_alignment = 1
-
-[node name="ScoresLabel" type="Label" parent="HUD/HighScoresPanel/VBox" unique_id=941112790]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="NameInputBox" type="HBoxContainer" parent="HUD/HighScoresPanel/VBox" unique_id=1609390850]
-layout_mode = 2
-alignment = 1
-
-[node name="Label" type="Label" parent="HUD/HighScoresPanel/VBox/NameInputBox" unique_id=991550877]
-custom_minimum_size = Vector2(90, 0)
-layout_mode = 2
-text = "Your Name: "
-
-[node name="NameInput" type="LineEdit" parent="HUD/HighScoresPanel/VBox/NameInputBox" unique_id=1246094513]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-max_length = 12
-
-[node name="BackButton" type="Button" parent="HUD/HighScoresPanel/VBox" unique_id=1474446109]
-layout_mode = 2
-text = "Back to Menu"
-
-[node name="HintLabel" type="Label" parent="HUD/HighScoresPanel/VBox" unique_id=683182140]
-layout_mode = 2
-text = "Press R to restart"
-horizontal_alignment = 1
-
 [node name="MainMenuPanel" type="Panel" parent="HUD" unique_id=1706491323]
-visible = false
 custom_minimum_size = Vector2(320, 400)
 anchors_preset = 8
 anchor_left = 0.5
@@ -207,6 +94,172 @@ horizontal_alignment = 1
 vertical_alignment = 2
 autowrap_mode = 3
 
+[node name="HighScoresPanel" type="Panel" parent="HUD" unique_id=215109762]
+visible = false
+custom_minimum_size = Vector2(320, 510)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -320.0
+offset_right = 240.0
+offset_bottom = 322.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="HUD/HighScoresPanel" unique_id=2016339880]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="HUD/HighScoresPanel/VBox" unique_id=1801491838]
+custom_minimum_size = Vector2(0, 66)
+layout_mode = 2
+
+[node name="Title" type="Label" parent="HUD/HighScoresPanel/VBox" unique_id=2140040299]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "HIGH SCORES"
+horizontal_alignment = 1
+
+[node name="ScoresLabel" type="Label" parent="HUD/HighScoresPanel/VBox" unique_id=941112790]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NameInputBox" type="HBoxContainer" parent="HUD/HighScoresPanel/VBox" unique_id=1609390850]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="HUD/HighScoresPanel/VBox/NameInputBox" unique_id=991550877]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+text = "Your Name: "
+
+[node name="NameInput" type="LineEdit" parent="HUD/HighScoresPanel/VBox/NameInputBox" unique_id=1246094513]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+max_length = 12
+
+[node name="BackButton" type="Button" parent="HUD/HighScoresPanel/VBox" unique_id=1474446109]
+layout_mode = 2
+text = "Back to Menu"
+
+[node name="HintLabel" type="Label" parent="HUD/HighScoresPanel/VBox" unique_id=683182140]
+layout_mode = 2
+text = "Press R to restart"
+horizontal_alignment = 1
+
+[node name="PausePanel" type="Panel" parent="HUD" unique_id=1381904409]
+visible = false
+custom_minimum_size = Vector2(320, 400)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -200.0
+offset_right = 160.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD/PausePanel" unique_id=828215807]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/PausePanel/MarginContainer" unique_id=1497141062]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HUD/PausePanel/MarginContainer/VBoxContainer" unique_id=1102020771]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="Control" type="Control" parent="HUD/PausePanel/MarginContainer/VBoxContainer" unique_id=973219785]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="ResumeButton" type="Button" parent="HUD/PausePanel/MarginContainer/VBoxContainer" unique_id=1337350331]
+layout_mode = 2
+text = "Resume"
+
+[node name="ToggleInputButton" type="Button" parent="HUD/PausePanel/MarginContainer/VBoxContainer" unique_id=2033551728]
+layout_mode = 2
+text = "Switch to Keyboard"
+
+[node name="QuitToMenuButton" type="Button" parent="HUD/PausePanel/MarginContainer/VBoxContainer" unique_id=947996555]
+layout_mode = 2
+text = "Quit to Menu"
+
+[node name="TopBar" type="Control" parent="HUD" unique_id=2147106547]
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 60.0
+grow_horizontal = 2
+
+[node name="BackgroundRect" type="ColorRect" parent="HUD/TopBar" unique_id=177703722]
+custom_minimum_size = Vector2(0, 66)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 6.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.3)
+
+[node name="ScoreLabel" type="Label" parent="HUD/TopBar" unique_id=1169235561]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 69.0
+offset_bottom = 31.0
+text = "Score: 0"
+
+[node name="LivesLabel" type="Label" parent="HUD/TopBar" unique_id=1864167159]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -30.0
+offset_top = 8.0
+offset_right = 30.0
+offset_bottom = 58.0
+grow_horizontal = 2
+text = "Lives: 3
+Lvl: 1"
+horizontal_alignment = 1
+
+[node name="HiScoreLabel" type="Label" parent="HUD/TopBar" unique_id=1685362129]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -89.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "Hi Score: 0"
+
 [node name="BottomBar" type="Control" parent="HUD" unique_id=1515862990]
 layout_mode = 3
 anchors_preset = 12
@@ -258,6 +311,7 @@ horizontal_alignment = 2
 vertical_alignment = 2
 
 [node name="MessageLabel" type="Label" parent="HUD" unique_id=1510571933]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

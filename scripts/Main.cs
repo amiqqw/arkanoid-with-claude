@@ -36,6 +36,8 @@ public partial class Main : Node2D
 		_hud.StartGameRequested   += StartNewGame;
 		_hud.ResetScoresRequested += ResetHighScores;
 		_hud.BackToMenuRequested  += ReturnToMenu;
+		_hud.PauseToggleRequested += OnPauseToggle;
+		_hud.ToggleInputRequested += OnToggleInputFromPause;
 
 		var probe = BallScene.Instantiate<Ball>();
 		_baseBallSpeed = probe.Speed;
@@ -87,6 +89,7 @@ public partial class Main : Node2D
 
 	private void ReturnToMenu()
 	{
+		GetTree().Paused = false;
 		GameState.Instance.ChangePhase(GamePhase.MainMenu);
 	}
 
@@ -359,5 +362,22 @@ public partial class Main : Node2D
 	{
 		GD.Print("Window close requested — quitting cleanly.");
 		GetTree().Quit();
+	}
+
+	private void OnPauseToggle()
+	{
+		if (GameState.Instance.Phase != GamePhase.Playing) return;
+
+		bool nowPaused = !GetTree().Paused;
+		GetTree().Paused = nowPaused;
+
+		if (nowPaused) _hud.ShowPauseMenu();
+		else _hud.HidePauseMenu();
+	}
+	
+	private void OnToggleInputFromPause()
+	{
+		if (_paddle == null) return;
+		_paddle.ToggleInputMode();
 	}
 }

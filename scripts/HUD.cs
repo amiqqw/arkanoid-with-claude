@@ -7,6 +7,8 @@ public partial class HUD : CanvasLayer
 	[Signal] public delegate void StartGameRequestedEventHandler();
 	[Signal] public delegate void ResetScoresRequestedEventHandler();
 	[Signal] public delegate void BackToMenuRequestedEventHandler();
+	[Signal] public delegate void PauseToggleRequestedEventHandler();
+	[Signal] public delegate void ToggleInputRequestedEventHandler();
 
 	private Label _scoreLabel;
 	private Label _livesLabel;
@@ -33,6 +35,12 @@ public partial class HUD : CanvasLayer
 	private ConfirmationDialog _resetConfirmDialog;
 	private bool _viewingScoresFromMenu = false;
 
+	private Panel _pausePanel;
+	private Button _resumeButton;
+	private Button _toggleInputButton;
+	private Button _quitToMenuButton;
+	private InputMode _currentInputMode = InputMode.Mouse;
+
 	private int _currentLives;
 	private int _currentLevel;
 
@@ -43,32 +51,42 @@ public partial class HUD : CanvasLayer
 		_inputModeLabel = GetNode<Label>("BottomBar/InputModeLabel");
 		_timeLabel = GetNode<Label>("BottomBar/TimeLabel");
 
-		_scoreLabel   = GetNode<Label>("TopBar/ScoreLabel");
-		_livesLabel   = GetNode<Label>("TopBar/LivesLabel");
+		_scoreLabel = GetNode<Label>("TopBar/ScoreLabel");
+		_livesLabel = GetNode<Label>("TopBar/LivesLabel");
 		_hiScoreLabel = GetNode<Label>("TopBar/HiScoreLabel");
 
 		_highScoresPanel = GetNode<Panel>("HighScoresPanel");
-		_scoresLabel     = GetNode<Label>("HighScoresPanel/VBox/ScoresLabel");
-		_nameInputBox    = GetNode<HBoxContainer>("HighScoresPanel/VBox/NameInputBox");
-		_nameInput       = GetNode<LineEdit>("HighScoresPanel/VBox/NameInputBox/NameInput");
-		_hintLabel       = GetNode<Label>("HighScoresPanel/VBox/HintLabel");
-		_backButton      = GetNode<Button>("HighScoresPanel/VBox/BackButton");
-		
-		_mainMenuPanel    = GetNode<Panel>("MainMenuPanel");
-		_startButton      = GetNode<Button>("MainMenuPanel/MarginContainer/VBox/StartButton");
+		_scoresLabel = GetNode<Label>("HighScoresPanel/VBox/ScoresLabel");
+		_nameInputBox = GetNode<HBoxContainer>("HighScoresPanel/VBox/NameInputBox");
+		_nameInput = GetNode<LineEdit>("HighScoresPanel/VBox/NameInputBox/NameInput");
+		_hintLabel = GetNode<Label>("HighScoresPanel/VBox/HintLabel");
+		_backButton = GetNode<Button>("HighScoresPanel/VBox/BackButton");
+
+		_mainMenuPanel = GetNode<Panel>("MainMenuPanel");
+		_startButton = GetNode<Button>("MainMenuPanel/MarginContainer/VBox/StartButton");
 		_viewScoresButton = GetNode<Button>("MainMenuPanel/MarginContainer/VBox/ViewScoresButton");
-		_resetButton      = GetNode<Button>("MainMenuPanel/MarginContainer/VBox/ResetButton");
-		_quitButton       = GetNode<Button>("MainMenuPanel/MarginContainer/VBox/QuitButton");
+		_resetButton = GetNode<Button>("MainMenuPanel/MarginContainer/VBox/ResetButton");
+		_quitButton = GetNode<Button>("MainMenuPanel/MarginContainer/VBox/QuitButton");
+
+		_pausePanel = GetNode<Panel>("PausePanel");
+		_resumeButton = GetNode<Button>("PausePanel/MarginContainer/VBoxContainer/ResumeButton");
+		_toggleInputButton = GetNode<Button>("PausePanel/MarginContainer/VBoxContainer/ToggleInputButton");
+		_quitToMenuButton = GetNode<Button>("PausePanel/MarginContainer/VBoxContainer/QuitToMenuButton");
+
+		_resumeButton.Pressed += () => EmitSignal(SignalName.PauseToggleRequested);
+		_toggleInputButton.Pressed += () => EmitSignal(SignalName.ToggleInputRequested);
+		_quitToMenuButton.Pressed += () => EmitSignal(SignalName.BackToMenuRequested);
 
 		_resetConfirmDialog = GetNode<ConfirmationDialog>("ResetConfirmDialog");
 		_resetConfirmDialog.Confirmed += () => EmitSignal(SignalName.ResetScoresRequested);
 
-		_startButton.Pressed      += () => EmitSignal(SignalName.StartGameRequested);
-		_resetButton.Pressed      += () => _resetConfirmDialog.PopupCentered();
-		_quitButton.Pressed       += () => GetTree().Quit();
+		_startButton.Pressed += () => EmitSignal(SignalName.StartGameRequested);
+		_resetButton.Pressed += () => _resetConfirmDialog.PopupCentered();
+		_quitButton.Pressed += () => GetTree().Quit();
 		_viewScoresButton.Pressed += OnViewScoresPressed;
-		_backButton.Pressed       += OnBackPressed;
-		
+		_backButton.Pressed += OnBackPressed;
+
+
 		_nameInput.TextSubmitted += OnNameSubmitted;
 
 		var gs = GameState.Instance;
@@ -85,6 +103,20 @@ public partial class HUD : CanvasLayer
 		OnLivesChanged(gs.Lives);
 		OnScoreChanged(gs.Score, gs.HiScore);
 		OnPhaseChange((int)gs.Phase);
+	}
+	
+	public override void _UnhandledInput(InputEvent @event)
+	{
+		if (@event is not InputEventKey keyEvent || !keyEvent.Pressed) return;
+
+		if (keyEvent.Keycode == Key.Escape)
+		{
+			var phase = GameState.Instance.Phase;
+			if (phase == GamePhase.Playing)
+			{
+				EmitSignal(SignalName.PauseToggleRequested);
+			}
+		}
 	}
 
 	private void OnLevelChanged(int level)
@@ -139,7 +171,8 @@ public partial class HUD : CanvasLayer
 	private void OnPhaseChange(int newPhaseInt)
 	{
 		var phase = (GamePhase)newPhaseInt;
-		_viewingScoresFromMenu = false;   // сброс при любой смене фазы
+		_viewingScoresFromMenu = false;
+		_pausePanel.Visible = false;
 
 		switch (phase)
 		{
@@ -202,8 +235,9 @@ public partial class HUD : CanvasLayer
 
 	public void OnPaddleInputModeChanged(int modeInt)
 	{
-		var mode = (InputMode)modeInt;
-		_inputModeLabel.Text = $"Input: {mode} (M to toggle)";
+		_currentInputMode = (InputMode)modeInt;
+		_inputModeLabel.Text = $"Input: {_currentInputMode} (M to toggle)";
+		UpdateToggleInputButtonText();
 	}
 
 	private void ShowHighScoresPanel()
@@ -213,7 +247,6 @@ public partial class HUD : CanvasLayer
 
 		if (table.IsHighScore(score))
 		{
-			// попал в топ — ждём ввода имени
 			_pendingScore = score;
 			_newEntryIndex = -1;
 			_nameInputBox.Visible = true;
@@ -288,7 +321,6 @@ public partial class HUD : CanvasLayer
 		}
 		else
 		{
-			// Из GameOver — через сигнал, чтобы Main сам сменил фазу
 			EmitSignal(SignalName.BackToMenuRequested);
 		}
 	}
@@ -296,5 +328,23 @@ public partial class HUD : CanvasLayer
 	public void RefreshScoresDisplay()
 	{
 		UpdateScoresText();
+	}
+
+	public void ShowPauseMenu()
+	{
+		UpdateToggleInputButtonText();
+		_pausePanel.Visible = true;
+	}
+
+	public void HidePauseMenu()
+	{
+		_pausePanel.Visible = false;
+	}
+
+	private void UpdateToggleInputButtonText()
+	{
+		_toggleInputButton.Text = (_currentInputMode == InputMode.Keyboard)
+			? "Switch to Mouse"
+			: "Switch to Keyboard";
 	}
 }

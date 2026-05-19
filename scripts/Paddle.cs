@@ -46,7 +46,7 @@ public partial class Paddle : CharacterBody2D
 		ClampToScreen();
 	}
 
-	private void ToggleInputMode()
+	public void ToggleInputMode()
 	{
 		_inputMode = (_inputMode == InputMode.Keyboard) ? InputMode.Mouse : InputMode.Keyboard;
 		_mouseVelocity = Vector2.Zero;
