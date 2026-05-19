@@ -50,12 +50,14 @@ public static class Levels
     private const int RandomRows = 5;
     private const int RandomCols = 8;
 
-    public static int[,] GenerateRandom()
+    public static int[,] GenerateRandom() => GenerateRandom(RandomRows, RandomCols);
+
+    public static int[,] GenerateRandom(int rows, int cols)
     {
-        var layout = new int[RandomRows, RandomCols];
-        for (int row = 0; row < RandomRows; row++)
+        var layout = new int[rows, cols];
+        for (int row = 0; row < rows; row++)
         {
-            for (int col = 0; col < RandomCols; col++)
+            for (int col = 0; col < cols; col++)
             {
                 layout[row, col] = PickWeightedCode();
             }

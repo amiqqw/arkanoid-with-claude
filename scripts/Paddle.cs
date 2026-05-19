@@ -71,7 +71,7 @@ public partial class Paddle : CharacterBody2D
 		// dx = Mathf.Clamp(dx, -maxStep, maxStep);
 
 		Position += new Vector2(dx, 0);
-		_mouseVelocity = new Vector2(dx / (float)delta, 0);
+		_mouseVelocity = new Vector2(dx / ((float)delta * 2), 0);
 
 		Velocity = Vector2.Zero;
 	}

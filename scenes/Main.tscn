@@ -8,6 +8,9 @@
 [ext_resource type="PackedScene" uid="uid://d4bwhhqmi8o3u" path="res://scenes/Bonus.tscn" id="6_bjd11"]
 [ext_resource type="Script" uid="uid://qnwpx1hsub7b" path="res://scripts/HUD.cs" id="7_qmy6f"]
 
+[sub_resource type="SystemFont" id="SystemFont_nxtc6"]
+font_names = PackedStringArray("Monospace")
+
 [node name="Main" type="Node2D" unique_id=397703416]
 script = ExtResource("1_nxtc6")
 BrickScene = ExtResource("2_jlsqs")
@@ -20,8 +23,110 @@ BonusScene = ExtResource("6_bjd11")
 process_mode = 3
 script = ExtResource("7_qmy6f")
 
+[node name="BottomBar" type="Control" parent="HUD" unique_id=1515862990]
+layout_mode = 3
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="BackgroundRect" type="ColorRect" parent="HUD/BottomBar" unique_id=675342371]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.3)
+
+[node name="InputModeLabel" type="Label" parent="HUD/BottomBar" unique_id=656993750]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -22.0
+offset_right = 163.0
+offset_bottom = -6.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 11
+text = "Input: Keyboard (M to toggle)"
+
+[node name="TimeLabel" type="Label" parent="HUD/BottomBar" unique_id=2053734184]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -72.0
+offset_top = -22.0
+offset_right = -8.0
+offset_bottom = -6.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 11
+text = "Time: 0m 0s"
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="TopBar" type="Control" parent="HUD" unique_id=2147106547]
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 60.0
+grow_horizontal = 2
+
+[node name="BackgroundRect" type="ColorRect" parent="HUD/TopBar" unique_id=177703722]
+custom_minimum_size = Vector2(0, 66)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 6.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.3)
+
+[node name="ScoreLabel" type="Label" parent="HUD/TopBar" unique_id=1169235561]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 69.0
+offset_bottom = 31.0
+text = "Score: 0"
+
+[node name="LivesLabel" type="Label" parent="HUD/TopBar" unique_id=1864167159]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -30.0
+offset_top = 8.0
+offset_right = 30.0
+offset_bottom = 58.0
+grow_horizontal = 2
+text = "Lives: 3
+Lvl: 1"
+horizontal_alignment = 1
+
+[node name="HiScoreLabel" type="Label" parent="HUD/TopBar" unique_id=1685362129]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -89.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "Hi Score: 0"
+
 [node name="MainMenuPanel" type="Panel" parent="HUD" unique_id=1706491323]
-custom_minimum_size = Vector2(320, 400)
+custom_minimum_size = Vector2(320, 420)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -74,6 +179,10 @@ text = "View High Scores"
 [node name="ResetButton" type="Button" parent="HUD/MainMenuPanel/MarginContainer/VBox" unique_id=246583534]
 layout_mode = 2
 text = "Reset High Scores"
+
+[node name="BenchmarksButton" type="Button" parent="HUD/MainMenuPanel/MarginContainer/VBox" unique_id=704305571]
+layout_mode = 2
+text = "Benchmarks"
 
 [node name="QuitButton" type="Button" parent="HUD/MainMenuPanel/MarginContainer/VBox" unique_id=1740233041]
 layout_mode = 2
@@ -208,107 +317,75 @@ text = "Switch to Keyboard"
 layout_mode = 2
 text = "Quit to Menu"
 
-[node name="TopBar" type="Control" parent="HUD" unique_id=2147106547]
-layout_mode = 3
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 60.0
+[node name="BenchmarkPanel" type="Panel" parent="HUD" unique_id=1819730365]
+visible = false
+custom_minimum_size = Vector2(460, 580)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -20.0
+offset_right = 230.0
+offset_bottom = 20.0
 grow_horizontal = 2
+grow_vertical = 2
 
-[node name="BackgroundRect" type="ColorRect" parent="HUD/TopBar" unique_id=177703722]
-custom_minimum_size = Vector2(0, 66)
+[node name="MarginContainer" type="MarginContainer" parent="HUD/BenchmarkPanel" unique_id=365999434]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_bottom = 6.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.3)
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
 
-[node name="ScoreLabel" type="Label" parent="HUD/TopBar" unique_id=1169235561]
-layout_mode = 1
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 69.0
-offset_bottom = 31.0
-text = "Score: 0"
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/BenchmarkPanel/MarginContainer" unique_id=282671579]
+layout_mode = 2
+theme_override_constants/separation = 8
 
-[node name="LivesLabel" type="Label" parent="HUD/TopBar" unique_id=1864167159]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -30.0
-offset_top = 8.0
-offset_right = 30.0
-offset_bottom = 58.0
-grow_horizontal = 2
-text = "Lives: 3
-Lvl: 1"
+[node name="Title" type="Label" parent="HUD/BenchmarkPanel/MarginContainer/VBoxContainer" unique_id=1330937823]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "ALGORITHM BENCHMARKS"
 horizontal_alignment = 1
 
-[node name="HiScoreLabel" type="Label" parent="HUD/TopBar" unique_id=1685362129]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -89.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = 31.0
-grow_horizontal = 0
-text = "Hi Score: 0"
+[node name="ScrollContainer" type="ScrollContainer" parent="HUD/BenchmarkPanel/MarginContainer/VBoxContainer" unique_id=1196243916]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
-[node name="BottomBar" type="Control" parent="HUD" unique_id=1515862990]
-layout_mode = 3
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 0
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/BenchmarkPanel/MarginContainer/VBoxContainer/ScrollContainer" unique_id=1218479854]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
 
-[node name="BackgroundRect" type="ColorRect" parent="HUD/BottomBar" unique_id=675342371]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -30.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.3)
-
-[node name="InputModeLabel" type="Label" parent="HUD/BottomBar" unique_id=656993750]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = -22.0
-offset_right = 163.0
-offset_bottom = -6.0
-grow_vertical = 0
+[node name="ResultsLabel" type="Label" parent="HUD/BenchmarkPanel/MarginContainer/VBoxContainer/ScrollContainer/HBoxContainer" unique_id=110390626]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/line_spacing = 0
+theme_override_fonts/font = SubResource("SystemFont_nxtc6")
 theme_override_font_sizes/font_size = 11
-text = "Input: Keyboard (M to toggle)"
+text = "Press \"Run\" to start."
+horizontal_alignment = 1
 
-[node name="TimeLabel" type="Label" parent="HUD/BottomBar" unique_id=2053734184]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -72.0
-offset_top = -22.0
-offset_right = -8.0
-offset_bottom = -6.0
-grow_horizontal = 0
-grow_vertical = 0
-theme_override_font_sizes/font_size = 11
-text = "Time: 0m 0s"
-horizontal_alignment = 2
-vertical_alignment = 2
+[node name="Buttons" type="HBoxContainer" parent="HUD/BenchmarkPanel/MarginContainer/VBoxContainer" unique_id=1272802985]
+layout_mode = 2
+alignment = 1
+
+[node name="RunButton" type="Button" parent="HUD/BenchmarkPanel/MarginContainer/VBoxContainer/Buttons" unique_id=41306273]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Run"
+
+[node name="BackButton" type="Button" parent="HUD/BenchmarkPanel/MarginContainer/VBoxContainer/Buttons" unique_id=1239115783]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Back"
 
 [node name="MessageLabel" type="Label" parent="HUD" unique_id=1510571933]
 visible = false

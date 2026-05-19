@@ -9,6 +9,7 @@ public partial class HUD : CanvasLayer
 	[Signal] public delegate void BackToMenuRequestedEventHandler();
 	[Signal] public delegate void PauseToggleRequestedEventHandler();
 	[Signal] public delegate void ToggleInputRequestedEventHandler();
+	[Signal] public delegate void OpenBenchmarksRequestedEventHandler();
 
 	private Label _scoreLabel;
 	private Label _livesLabel;
@@ -41,6 +42,16 @@ public partial class HUD : CanvasLayer
 	private Button _quitToMenuButton;
 	private InputMode _currentInputMode = InputMode.Mouse;
 
+	private Panel _benchmarkPanel;
+	private Label _benchmarkResultsLabel;
+	private Button _runBenchmarkButton;
+	private Button _backFromBenchmarkButton;
+	private Button _benchmarksButton;
+	private bool _viewingBenchmarksFromMenu = false;
+
+	private Control _topBar;
+	private Control _bottomBar;
+
 	private int _currentLives;
 	private int _currentLevel;
 
@@ -54,6 +65,9 @@ public partial class HUD : CanvasLayer
 		_scoreLabel = GetNode<Label>("TopBar/ScoreLabel");
 		_livesLabel = GetNode<Label>("TopBar/LivesLabel");
 		_hiScoreLabel = GetNode<Label>("TopBar/HiScoreLabel");
+
+		_topBar    = GetNode<Control>("TopBar");
+		_bottomBar = GetNode<Control>("BottomBar");
 
 		_highScoresPanel = GetNode<Panel>("HighScoresPanel");
 		_scoresLabel = GetNode<Label>("HighScoresPanel/VBox/ScoresLabel");
@@ -79,6 +93,17 @@ public partial class HUD : CanvasLayer
 
 		_resetConfirmDialog = GetNode<ConfirmationDialog>("ResetConfirmDialog");
 		_resetConfirmDialog.Confirmed += () => EmitSignal(SignalName.ResetScoresRequested);
+
+		_benchmarksButton = GetNode<Button>("MainMenuPanel/MarginContainer/VBox/BenchmarksButton");
+
+		_benchmarkPanel          = GetNode<Panel>("BenchmarkPanel");
+		_benchmarkResultsLabel   = GetNode<Label>("BenchmarkPanel/MarginContainer/VBoxContainer/ScrollContainer/HBoxContainer/ResultsLabel");
+		_runBenchmarkButton      = GetNode<Button>("BenchmarkPanel/MarginContainer/VBoxContainer/Buttons/RunButton");
+		_backFromBenchmarkButton = GetNode<Button>("BenchmarkPanel/MarginContainer/VBoxContainer/Buttons/BackButton");
+
+		_benchmarksButton.Pressed        += OnBenchmarksPressed;
+		_runBenchmarkButton.Pressed      += OnRunBenchmarkPressed;
+		_backFromBenchmarkButton.Pressed += OnBackFromBenchmarkPressed;
 
 		_startButton.Pressed += () => EmitSignal(SignalName.StartGameRequested);
 		_resetButton.Pressed += () => _resetConfirmDialog.PopupCentered();
@@ -173,6 +198,10 @@ public partial class HUD : CanvasLayer
 		var phase = (GamePhase)newPhaseInt;
 		_viewingScoresFromMenu = false;
 		_pausePanel.Visible = false;
+		_viewingBenchmarksFromMenu = false;
+		_benchmarkPanel.Visible = false;
+		_topBar.Visible = true;
+		_bottomBar.Visible = true;
 
 		switch (phase)
 		{
@@ -346,5 +375,78 @@ public partial class HUD : CanvasLayer
 		_toggleInputButton.Text = (_currentInputMode == InputMode.Keyboard)
 			? "Switch to Mouse"
 			: "Switch to Keyboard";
+	}
+
+	private void OnBenchmarksPressed()
+	{
+		_viewingBenchmarksFromMenu = true;
+		_mainMenuPanel.Visible = false;
+		_benchmarkPanel.Visible = true;
+		_topBar.Visible = false;
+		_bottomBar.Visible = false;
+		_benchmarkResultsLabel.Text = "Press \"Run\" to start.\n\nWarning: large sizes may freeze the game for ~1 second.";
+	}
+
+	private void OnBackFromBenchmarkPressed()
+	{
+		_viewingBenchmarksFromMenu = false;
+		_benchmarkPanel.Visible = false;
+		_mainMenuPanel.Visible = true;
+		_topBar.Visible = true;
+		_bottomBar.Visible = true;
+	}
+
+	private void OnRunBenchmarkPressed()
+	{
+		_benchmarkResultsLabel.Text = "Running...";
+		CallDeferred(nameof(RunBenchmarksDeferred));
+	}
+
+	private void RunBenchmarksDeferred()
+	{
+		var sb = new System.Text.StringBuilder();
+
+		var lvlResults = Benchmark.RunLevelGeneration();
+		sb.Append(FormatResults(
+			"LEVEL GENERATION",
+			"Theoretical: O(R * C) — linear in cell count",
+			lvlResults, 4.0));
+
+		sb.Append('\n');
+		sb.Append('\n');
+
+		var nearestResults = Benchmark.RunNearestSearch();
+		sb.Append(FormatResults(
+			"NEAREST BRICK SEARCH (naive)",
+			"Theoretical: O(N) — linear scan",
+			nearestResults, 10.0));
+
+		_benchmarkResultsLabel.Text = sb.ToString();
+	}
+
+	private string FormatResults(
+		string title,
+		string theory,
+		System.Collections.Generic.List<BenchmarkResult> results,
+		double expectedRatio)
+	{
+		var sb = new System.Text.StringBuilder();
+		sb.Append(title).Append('\n');
+		sb.Append(theory).Append('\n');
+		sb.Append('\n');
+		sb.Append($"{"n",10} | {"avg time",12} | {"ratio",7} | expected").Append('\n');
+		sb.Append(new string('-', 50)).Append('\n');
+
+		for (int i = 0; i < results.Count; i++)
+		{
+			string ratio = "  --  ";
+			if (i > 0 && results[i - 1].AvgMs > 0)
+			{
+				double r = results[i].AvgMs / results[i - 1].AvgMs;
+				ratio = $"{r,5:F2}x";
+			}
+			sb.Append($"{results[i].N,10} | {results[i].AvgMs,9:F3} ms | {ratio,7} | {expectedRatio,5:F1}x").Append('\n');
+		}
+		return sb.ToString();
 	}
 }

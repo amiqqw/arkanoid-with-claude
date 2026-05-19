@@ -12,9 +12,12 @@ public partial class Ball : CharacterBody2D
 	[Export] public float RallySpeedup = 0.08f;
 	[Export] public float PaddleHitMaxAngle = 60f;
 	[Export] public float PaddleVelocityInfluence = 0.0005f;
+	[Export] public int WallStreakThreshold = 2;
+	[Export] public float WallStreakTiltStep = 0.15f;
 
 	private Vector2 _direction = new Vector2(0.5f, -1).Normalized();
 	private float _speedMultiplier = 1f;
+	private int _sideWallStreak = 0;
 
 	public override void _PhysicsProcess(double delta)
 	{
@@ -30,11 +33,13 @@ public partial class Ball : CharacterBody2D
 			if (collider is Paddle paddle)
 			{
 				HandlePaddleHit(paddle);
+				_sideWallStreak = 0;
 			}
 			else
 			{
 				_direction = _direction.Bounce(collision.GetNormal());
 				IncreaseRallySpeed();
+				_sideWallStreak = 0;
 
 				if (collider is Brick brick)
 				{
@@ -50,17 +55,19 @@ public partial class Ball : CharacterBody2D
 			Mathf.Max(Position.Y, TopBoundary)
 		);
 
-		// Отскоки от стен экрана — также триггерят rally
 		bool wallBounce = false;
+		bool sideWallBounce = false;
 		if (Position.X <= 6 && _direction.X < 0)
 		{
 			_direction.X = -_direction.X;
 			wallBounce = true;
+			sideWallBounce = true;
 		}
 		if (Position.X >= size.X - 6 && _direction.X > 0)
 		{
 			_direction.X = -_direction.X;
 			wallBounce = true;
+			sideWallBounce = true;
 		}
 		if (Position.Y <= TopBoundary && _direction.Y < 0)
 		{
@@ -72,6 +79,16 @@ public partial class Ball : CharacterBody2D
 		{
 			IncreaseRallySpeed();
 			IncreaseRallySpeed();
+		}
+
+		if (sideWallBounce)
+		{
+			_sideWallStreak++;
+			if (_sideWallStreak > WallStreakThreshold)
+			{
+				_direction.Y += WallStreakTiltStep;
+				_direction = _direction.Normalized();
+			}
 		}
 
 		if (Position.Y >= size.Y - 36)
