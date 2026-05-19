@@ -337,6 +337,9 @@ public partial class HUD : CanvasLayer
 		_nameInputBox.Visible = false;
 		_hintLabel.Visible = false;
 		_backButton.Visible = true;
+		_topBar.Visible = false;
+		_bottomBar.Visible = false;
+
 		UpdateScoresText();
 	}
 
@@ -347,6 +350,8 @@ public partial class HUD : CanvasLayer
 			_viewingScoresFromMenu = false;
 			_highScoresPanel.Visible = false;
 			_mainMenuPanel.Visible = true;
+			_topBar.Visible = true;
+			_bottomBar.Visible = true;
 		}
 		else
 		{

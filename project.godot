@@ -10,10 +10,13 @@ config_version=5
 
 [application]
 
-config/name="arkanoid-coursejob"
+config/name="Arkanoid by AMI"
+config/description="xd"
+config/version="1.1"
 run/main_scene="uid://e152y8ec18q"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
-config/icon="res://sprites/icon.svg"
+config/icon="uid://cg07nk6p1douq"
+config/windows_native_icon="res://sprites/silly.ico"
 
 [autoload]
 

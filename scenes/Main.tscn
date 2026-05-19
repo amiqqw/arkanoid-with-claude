@@ -53,7 +53,7 @@ offset_right = 163.0
 offset_bottom = -6.0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 11
-text = "Input: Keyboard (M to toggle)"
+text = "Input: Mouse (M to toggle)"
 
 [node name="TimeLabel" type="Label" parent="HUD/BottomBar" unique_id=2053734184]
 layout_mode = 1
@@ -126,7 +126,7 @@ grow_horizontal = 0
 text = "Hi Score: 0"
 
 [node name="MainMenuPanel" type="Panel" parent="HUD" unique_id=1706491323]
-custom_minimum_size = Vector2(320, 420)
+custom_minimum_size = Vector2(320, 480)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -147,13 +147,13 @@ offset_top = 1.0
 offset_right = 321.0
 offset_bottom = 399.0
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
+theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
 [node name="VBox" type="VBoxContainer" parent="HUD/MainMenuPanel/MarginContainer" unique_id=401721260]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 5
 
 [node name="Label" type="Label" parent="HUD/MainMenuPanel/MarginContainer/VBox" unique_id=71539048]
 layout_mode = 2
@@ -198,23 +198,26 @@ text = "How to play:
 1. Move with arrow keys or mouse
 2. Hit :3 to gain score
 3. Hit and collect 🙏 to gain powerups
-4. Don't lose your balls!"
+4. Don't lose your balls!
+
+Controls: 
+M - Input toggle, Esc - pause"
 horizontal_alignment = 1
 vertical_alignment = 2
 autowrap_mode = 3
 
 [node name="HighScoresPanel" type="Panel" parent="HUD" unique_id=215109762]
 visible = false
-custom_minimum_size = Vector2(320, 510)
+custom_minimum_size = Vector2(460, 580)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -240.0
-offset_top = -320.0
-offset_right = 240.0
-offset_bottom = 322.0
+offset_left = -230.0
+offset_top = -290.0
+offset_right = 230.0
+offset_bottom = 290.0
 grow_horizontal = 2
 grow_vertical = 2
 
